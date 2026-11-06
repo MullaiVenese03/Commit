@@ -25,6 +25,24 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Database Seeding
+
+```bash
+# Seed database with demo accounts, goals, topics, prerequisites, and sessions
+$ npm run seed
+
+# Verify database seed integrity
+$ npm run seed:verify
+```
+
+### Development-Only Demo Credentials
+
+| Role | Name | Email | Password | Stored Hash Type |
+|---|---|---|---|---|
+| **Learner 1** | Alex Mercer | `alex.mercer@commit.dev` | `Learner123!Pass` | Argon2id |
+| **Learner 2** | Samantha Reed | `samantha.reed@commit.dev` | `Learner456!Pass` | Argon2id |
+| **Mentor** | Dr. Marcus Vance | `marcus.vance@commit.dev` | `Mentor789!Pass` | Argon2id |
+
 ## Project setup
 
 ```bash

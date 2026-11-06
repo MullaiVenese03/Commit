@@ -1,0 +1,109 @@
+generator client {
+  provider = "prisma-client"
+  output = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  LEARNER
+  MENTOR
+}
+
+model User {
+  id           String @id @default(uuid()) @db.Uuid
+  name         String
+  email        String @unique
+  passwordHash String
+  role         Role   @default(LEARNER)
+
+  goals         Goal[]
+  studySessions StudySession[]
+
+  updatedSettings SystemSettings[] @relation("SettingsUpdatedBy")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Goal {
+  id          String  @id @default(uuid()) @db.Uuid
+  learnerId   String  @db.Uuid
+  title       String
+  description String?
+
+  learner User    @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  topics  Topic[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([learnerId])
+}
+
+model Topic {
+  id          String    @id @default(uuid()) @db.Uuid
+  goalId      String    @db.Uuid
+  title       String
+  description String?
+  position    Int       @default(0)
+  isCompleted Boolean   @default(false)
+  completedAt DateTime?
+
+  goal Goal @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  prerequisites TopicPrerequisite[] @relation("TopicPrerequisites")
+  dependents    TopicPrerequisite[] @relation("TopicDependents")
+
+  studySessions StudySession[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([goalId])
+}
+
+model TopicPrerequisite {
+  id                  String @id @default(uuid()) @db.Uuid
+  topicId             String @db.Uuid
+  prerequisiteTopicId String @db.Uuid
+
+  topic             Topic @relation("TopicPrerequisites", fields: [topicId], references: [id], onDelete: Cascade)
+  prerequisiteTopic Topic @relation("TopicDependents", fields: [prerequisiteTopicId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([topicId, prerequisiteTopicId])
+  @@index([prerequisiteTopicId])
+}
+
+model StudySession {
+  id        String   @id @default(uuid()) @db.Uuid
+  learnerId String   @db.Uuid
+  topicId   String   @db.Uuid
+  studyDate DateTime @db.Date
+  minutes   Int
+  note      String?
+
+  learner User  @relation(fields: [learnerId], references: [id], onDelete: Cascade)
+  topic   Topic @relation(fields: [topicId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([learnerId, studyDate])
+  @@index([topicId])
+}
+
+model SystemSettings {
+  id                       String @id @default("global")
+  minSessionMinutes        Int    @default(5)
+  maxSessionMinutes        Int    @default(480)
+  maxPrerequisitesPerTopic Int    @default(5)
+
+  updatedById String? @db.Uuid
+  updatedBy   User?   @relation("SettingsUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  updatedAt DateTime @updatedAt
+}

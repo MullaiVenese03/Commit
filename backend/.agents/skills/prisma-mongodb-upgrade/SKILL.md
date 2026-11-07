@@ -14,8 +14,8 @@ classic-ORM major for MongoDB, and v7 never ships a MongoDB connector**. The suc
 is Prisma 8, where MongoDB support is in [Early Access](https://www.prisma.io/docs/orm/supported-databases)
 while PostgreSQL is a release candidate. The official
 [Prisma ORM 6 to 8 (MongoDB) guide](https://www.prisma.io/docs/guides/upgrade-prisma-orm/mongodb)
-is the source of truth for the migration steps. This skill frames the real decision — migrate to
-Prisma 8 (the encouraged path), or stay on v6 where a hard blocker applies — and carries
+is the source of truth for the migration steps. This skill frames the real decision - migrate to
+Prisma 8 (the encouraged path), or stay on v6 where a hard blocker applies - and carries
 the migration mechanics.
 
 **Never do either of these:**
@@ -30,17 +30,17 @@ the migration mechanics.
 | Version | MongoDB status |
 |---------|----------------|
 | Prisma ORM v6 | Fully supported (`mongodb` provider); latest 6.x is the current stable path; maintenance line |
-| Prisma ORM v7 | **No MongoDB connector — not an option, ever** |
-| Prisma 8 | MongoDB support in **Early Access** through `@prisma/orm-mongo`; still changes between release candidates — the successor path for MongoDB projects |
+| Prisma ORM v7 | **No MongoDB connector - not an option, ever** |
+| Prisma 8 | MongoDB support in **Early Access** through `@prisma/orm-mongo`; still changes between release candidates - the successor path for MongoDB projects |
 
 ## The decision, up front
 
 **Migrating to Prisma 8 is the encouraged path.** MongoDB support in Prisma 8 is Early
-Access: functional and moving quickly — and the Prisma team wants MongoDB users to migrate
+Access: functional and moving quickly - and the Prisma team wants MongoDB users to migrate
 early and share feedback. The migration mechanics are
 detailed in the references.
 
-**Staying on the latest v6 remains a legitimate choice where a hard blocker applies** —
+**Staying on the latest v6 remains a legitimate choice where a hard blocker applies** -
 stated plainly: Prisma 8 has no MongoDB transaction method yet (multi-document writes use
 the `mongodb` driver's sessions directly), and MongoDB behavior can still change between
 Prisma 8 release candidates.
@@ -51,7 +51,7 @@ Prisma 8 release candidates.
 |--------|-----------|
 | No blockers below apply | Migrate to Prisma 8; run the `verify-cutover-checklist` and share feedback with the Prisma team |
 | Greenfield / prototype / internal tool | Migrate to Prisma 8 |
-| Codebase uses multi-document transactions (`$transaction`) — check with grep, do not ask | Plan raw-driver session equivalents first (see `client-api-mapping`), or stay on v6 until Prisma 8 adds a MongoDB transaction method |
+| Codebase uses multi-document transactions (`$transaction`) - check with grep, do not ask | Plan raw-driver session equivalents first (see `client-api-mapping`), or stay on v6 until Prisma 8 adds a MongoDB transaction method |
 | Team cannot absorb breaking changes between release candidates | Stay on v6 until MongoDB support leaves Early Access |
 | Risk-averse but interested | Point Prisma 8 at the v6 schema with `prisma6Schema(...)` (see `schema-contract-mapping`), rehearse on a copy (see `verify-cutover-checklist`), then migrate |
 
@@ -71,7 +71,7 @@ Note: this section will be updated when Prisma 8 adds a MongoDB transaction meth
 |-----------|----------------|
 | `references/decision-stay-or-migrate.md` | The full decision framing, blocker checks, and stay-hygiene detail |
 | `references/schema-contract-mapping.md` | v6 schema (`mongodb` provider, `@db.ObjectId`, composite types) → Prisma 8 contract concepts |
-| `references/client-api-mapping.md` | v6 client calls → Prisma 8 equivalents, incl. raw escape hatches and transactions — names map, parity does not |
+| `references/client-api-mapping.md` | v6 client calls → Prisma 8 equivalents, incl. raw escape hatches and transactions - names map, parity does not |
 | `references/migrations-mapping.md` | v6 `db push`-only story → Prisma 8's plan/migrate/verify/sign flow |
 | `references/verify-cutover-checklist.md` | No-data-moves verification: same DB, index parity, staged round-trip before cutover |
 
@@ -93,5 +93,5 @@ no longer accepts AWS credentials in the connection string.
 
 This skill is the **discovery bridge**, not a replacement for Prisma 8's own
 documentation. After a project switches to Prisma 8, run `prisma skills sync`, read the
-synced `prisma-8/SKILL.md`, and follow it for day-to-day work — do not keep working from
+synced `prisma-8/SKILL.md`, and follow it for day-to-day work - do not keep working from
 this skill's summaries.

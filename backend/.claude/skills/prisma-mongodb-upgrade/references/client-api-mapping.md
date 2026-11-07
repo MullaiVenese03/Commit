@@ -1,6 +1,6 @@
 # client-api-mapping
 
-How v6 Prisma Client calls map to Prisma 8's Mongo client — names map, parity does not.
+How v6 Prisma Client calls map to Prisma 8's Mongo client - names map, parity does not.
 
 ## Priority
 
@@ -11,7 +11,7 @@ CRITICAL
 The v6 and Prisma 8 client APIs look superficially similar, but none of the v6 MongoDB raw
 methods exist under their old names, aggregation moved to a different lane entirely, and
 transactions go through the driver rather than a Prisma method. Assuming parity produces
-code that does not compile — or, in the transactions case, code that silently loses
+code that does not compile - or, in the transactions case, code that silently loses
 atomicity.
 
 ## The mapping
@@ -25,7 +25,7 @@ atomicity.
 | `prisma.user.aggregate(...)`, `groupBy(...)` | **No ORM equivalent.** Build a plan with `db.query.from(...).group(...).build()` and run it with `(await db.runtime()).query(plan)` | Group totals come from `acc` in `@prisma/orm-mongo/query-builder` |
 | `<model>.findRaw(...)`, `<model>.aggregateRaw(...)` ([v6 docs](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries#findraw)) | `db.raw.collection('<name>').aggregate([...]).build()`, or `db.query.rawCommand(...)` | Run the plan with `(await db.runtime()).query(plan)` |
 | `$runCommandRaw(...)` ([v6 docs](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries#runcommandraw)) | **No Prisma equivalent.** Create a `MongoClient`, pass it to the `mongo(...)` binding as `mongoClient`, and call `mongoClient.db(...).command(...)` | `db.raw` is collection-scoped; database-level commands go through the driver |
-| `$transaction(...)` — works on v6 with a replica set ([v6 docs](https://www.prisma.io/docs/orm/overview/databases/mongodb#replica-set-configuration)) | **No Prisma method yet.** Use `mongodb` driver sessions (`client.startSession()` / `session.withTransaction(...)`) on a replica set | Pass `{ session }` to every operation; an operation without it runs outside the transaction |
+| `$transaction(...)` - works on v6 with a replica set ([v6 docs](https://www.prisma.io/docs/orm/overview/databases/mongodb#replica-set-configuration)) | **No Prisma method yet.** Use `mongodb` driver sessions (`client.startSession()` / `session.withTransaction(...)`) on a replica set | Pass `{ session }` to every operation; an operation without it runs outside the transaction |
 | `$connect` / `$disconnect` | Connects lazily on first use; `db.close()` disconnects | |
 
 **ObjectId filters in the pipeline builder:** `.match((f) => f.authorId.eq(authorId))` sends
@@ -72,4 +72,4 @@ try {
 - [Prisma ORM 6 to 8 (MongoDB) guide, step 3](https://www.prisma.io/docs/guides/upgrade-prisma-orm/mongodb#3-port-client-calls)
 - [Prisma 8 transactions on MongoDB](https://www.prisma.io/docs/orm/fundamentals/transactions#transactions-on-mongodb)
 - [v6 MongoDB raw queries](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/raw-queries#raw-queries-with-mongodb)
-- The `prisma-8` skill's `references/queries-mongo.md` — authoritative for the Prisma 8 side
+- The `prisma-8` skill's `references/queries-mongo.md` - authoritative for the Prisma 8 side

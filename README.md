@@ -1,4 +1,4 @@
-# Commit — Study Progress Tracker with Prerequisite Rules
+# Commit - Study Progress Tracker with Prerequisite Rules
 
 Full-stack assessment project for the Cardinality Study Progress Tracker platform.
 

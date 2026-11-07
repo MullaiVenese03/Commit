@@ -8,14 +8,14 @@ HIGH
 
 ## Why It Matters
 
-This is the largest workflow change in the migration — in v6, MongoDB explicitly has no
+This is the largest workflow change in the migration - in v6, MongoDB explicitly has no
 Prisma Migrate, while in Prisma 8 MongoDB participates in the full migration lifecycle.
 Teams porting a `db push` habit into Prisma 8 without understanding the plan/verify/sign flow
 will fight the tooling or bypass its safety rails.
 
 ## v6: `db push` only
 
-MongoDB on v6 has no Prisma Migrate and no plans to add it — "MongoDB projects do not rely
+MongoDB on v6 has no Prisma Migrate and no plans to add it - "MongoDB projects do not rely
 on internal schemas" ([no support for Prisma Migrate](https://www.prisma.io/docs/orm/overview/databases/mongodb#no-support-for-prisma-migrate)).
 The workflow is `prisma db push` to sync indexes and unique constraints, with no migration
 history on disk.
@@ -80,4 +80,4 @@ experiments, mirroring how `db push` was used on v6.
 
 - [Prisma ORM 6 to 8 (MongoDB) guide, step 4](https://www.prisma.io/docs/guides/upgrade-prisma-orm/mongodb#4-adopt-the-migration-lifecycle)
 - [v6: no Prisma Migrate for MongoDB](https://www.prisma.io/docs/orm/overview/databases/mongodb#no-support-for-prisma-migrate)
-- The `prisma-8` skill's `references/migrations.md` — authoritative for the Prisma 8 side
+- The `prisma-8` skill's `references/migrations.md` - authoritative for the Prisma 8 side

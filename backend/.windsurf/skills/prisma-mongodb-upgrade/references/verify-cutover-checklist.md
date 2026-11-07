@@ -1,6 +1,6 @@
 # verify-cutover-checklist
 
-Verification checklist for a v6 → Prisma 8 cutover: the data never moves — only the code does.
+Verification checklist for a v6 → Prisma 8 cutover: the data never moves - only the code does.
 
 ## Priority
 
@@ -9,7 +9,7 @@ CRITICAL
 ## Why It Matters
 
 A v6 → Prisma 8 migration is a *client and workflow* migration against the **same MongoDB
-database** — there is no data export/import step, and introducing one (or pointing the new
+database** - there is no data export/import step, and introducing one (or pointing the new
 stack at a fresh database) turns a code migration into an outage. The checklist below keeps
 the cutover observable and reversible.
 
@@ -24,7 +24,7 @@ the cutover observable and reversible.
 
 1. **Same database, verified:** the Prisma 8 config points at the same connection string /
    database name the v6 app uses. The `mongodb@7` driver rejects some URLs v6 accepted, such
-   as AWS credentials in the connection string — validate the URL with the driver first.
+   as AWS credentials in the connection string - validate the URL with the driver first.
 2. **Server floor:** MongoDB server is 8.0+ (Prisma 8's requirement; v6 tolerated older).
    Confirm before authoring any contract.
 3. **Rehearsal on a copy:** on a throwaway copy of the database, run `contract emit`,
@@ -32,7 +32,7 @@ the cutover observable and reversible.
    touching production. Verification failures here are contract-mapping bugs, not database
    problems.
 4. **Index parity:** enumerate indexes on every collection (`db.collection.getIndexes()`)
-   and confirm the Prisma 8 contract declares the same set — v6 `db push` may have created
+   and confirm the Prisma 8 contract declares the same set - v6 `db push` may have created
    indexes the new contract must re-declare, or verification and query performance will
    diverge.
 5. **Validator impact assessed:** Prisma 8 emits closed `$jsonSchema` validators by default;
@@ -48,7 +48,7 @@ the cutover observable and reversible.
 9. **Staged read-only soak:** run the Prisma 8 stack read-only against staging/production data
    alongside v6 and compare outputs before allowing writes.
 10. **Cutover + rollback:** switch writes to Prisma 8 only after the soak; keep the v6 branch
-    deployable as the rollback path. Rolling back is a code rollback — the data was never
+    deployable as the rollback path. Rolling back is a code rollback - the data was never
     moved.
 
 After cutover, follow the synced `prisma-8` skill for ongoing work (see the hand-off rule

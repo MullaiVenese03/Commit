@@ -34,7 +34,7 @@ you need what v6 syntax cannot express, such as polymorphism.
 | `@default(now())`, `@updatedAt` | `temporal.createdAt()`, `temporal.updatedAt()` | |
 | Composite types: `type Address { ... }` ([composite types](https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/composite-types)) | `type Address { ... }` | Unchanged |
 | Enums read and written by key | Enums read and write their **storage value** (`role: 'author'`, not `'Author'`) | Declare the storage value in the enum, for example `Author = "author"` |
-| Model names address the client (`prisma.user`) | **Collection names** address the ORM: `db.orm.users` — the `@@map(...)` value, or the model name exactly as written when there is no `@@map`. `db.orm.User` does not exist for a model mapped to `users` | The most common porting mistake |
+| Model names address the client (`prisma.user`) | **Collection names** address the ORM: `db.orm.users` - the `@@map(...)` value, or the model name exactly as written when there is no `@@map`. `db.orm.User` does not exist for a model mapped to `users` | The most common porting mistake |
 | Indexes declared in schema, applied by `db push` | `@@index(...)` / `@@unique(...)` in the contract, applied by migrations | See `migrations-mapping.md` |
 | No native polymorphism | `@@discriminator(field)` on the base model and `@@base(Base, "value")` on each variant | Declare a variant for **every** value the field has in existing data: the generated validator rejects writes to documents with an undeclared value. A variant must declare at least one field |
 
@@ -42,7 +42,7 @@ you need what v6 syntax cannot express, such as polymorphism.
 
 ```typescript
 // Ported from v6 and addressed by model name:
-const user = await db.orm.User.where({ email }).first(); // no such key — the collection is mapped to "users"
+const user = await db.orm.User.where({ email }).first(); // no such key - the collection is mapped to "users"
 ```
 
 ## Good
@@ -62,4 +62,4 @@ older MongoDB servers, so check the server version before planning a migration.
 - [Prisma ORM 6 to 8 (MongoDB) guide, step 2](https://www.prisma.io/docs/guides/upgrade-prisma-orm/mongodb#2-port-the-schema-to-a-contract)
 - [v6 MongoDB schema documentation](https://www.prisma.io/docs/orm/overview/databases/mongodb)
 - [v6 composite types (MongoDB-only)](https://www.prisma.io/docs/orm/prisma-client/special-fields-and-types/composite-types)
-- The `prisma-8` skill's `references/contract.md` — authoritative for the Prisma 8 side
+- The `prisma-8` skill's `references/contract.md` - authoritative for the Prisma 8 side

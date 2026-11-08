@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Search, Users } from 'lucide-react';
+import { Search, Users, X } from 'lucide-react';
 import { EmptyState } from '../../components/ui/EmptyState';
-import { Input } from '../../components/ui/Input';
 import { Spinner } from '../../components/ui/Spinner';
 import { useLearners } from '../../hooks/useMentor';
 import { LearnerCard } from './LearnerCard';
@@ -19,37 +18,49 @@ export const LearnerListPage: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-zinc-200/80">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E4E2DE]">
         <div>
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-600 block">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#5557C8] block select-none">
             Academic Cohort
           </span>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-950 mt-0.5">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#24242A] mt-0.5">
             Learner Directory
           </h1>
-          <p className="text-xs text-zinc-500 mt-1">
+          <p className="text-xs text-[#777782] mt-1 max-w-2xl leading-normal">
             Track and support enrolled learners, observe study progress, and review milestone completions.
           </p>
         </div>
 
-        <div className="w-full sm:w-72">
-          <Input
-            type="search"
+        {/* Search input with search icon and clear button */}
+        <div className="relative w-full sm:w-72">
+          <Search className="w-3.5 h-3.5 text-[#777782] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
             placeholder="Search learners by name or email..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="text-xs py-1.5"
+            className="w-full pl-9 pr-7 py-2 text-xs rounded-lg border border-[#E4E2DE] bg-white text-[#24242A] placeholder:text-[#777782]/70 focus:outline-none focus:ring-2 focus:ring-[#5557C8]/20 focus:border-[#5557C8] transition shadow-2xs"
           />
+          {searchTerm && (
+            <button
+              type="button"
+              onClick={() => setSearchTerm('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#777782] hover:text-[#24242A] cursor-pointer"
+              aria-label="Clear search"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </div>
 
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center p-16 bg-white rounded-lg border border-zinc-200">
-          <Spinner size="lg" className="text-zinc-600" />
-          <p className="text-xs text-zinc-500 mt-3 font-medium">Loading learner directory...</p>
+        <div className="flex flex-col items-center justify-center p-16 bg-white rounded-xl border border-[#E4E2DE]">
+          <Spinner size="lg" className="text-[#5557C8]" />
+          <p className="text-xs text-[#777782] mt-3 font-medium">Loading learner directory...</p>
         </div>
       ) : error ? (
-        <div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg text-xs leading-normal">
+        <div className="p-4 bg-[#C45C5C]/10 border border-[#C45C5C]/25 text-[#C45C5C] rounded-xl text-xs leading-normal">
           Failed to load learners list. Please try again.
         </div>
       ) : filteredLearners.length === 0 ? (
@@ -60,7 +71,7 @@ export const LearnerListPage: React.FC = () => {
               ? `No learners found matching "${searchTerm}". Try a different keyword.`
               : 'No learners are currently registered in the system.'
           }
-          icon={searchTerm ? <Search className="w-5 h-5 text-zinc-400" /> : <Users className="w-5 h-5 text-zinc-400" />}
+          icon={searchTerm ? <Search className="w-5 h-5 text-[#777782]" /> : <Users className="w-5 h-5 text-[#777782]" />}
           actionLabel={searchTerm ? 'Clear Search' : undefined}
           onAction={searchTerm ? () => setSearchTerm('') : undefined}
         />

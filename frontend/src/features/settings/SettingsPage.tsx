@@ -9,17 +9,17 @@ export const SettingsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="pb-2 border-b border-zinc-200/80">
+      <div className="pb-4 border-b border-[#E4E2DE]">
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-600 flex items-center gap-1">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#5557C8] flex items-center gap-1 select-none">
             <Sliders className="w-3 h-3" />
             <span>Policy Governance</span>
           </span>
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-950 mt-0.5">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#24242A] mt-0.5">
           System Settings
         </h1>
-        <p className="text-xs text-zinc-500 mt-1">
+        <p className="text-xs text-[#777782] mt-1 max-w-2xl leading-normal">
           {isMentor
             ? 'Configure system-wide constraints for study session duration bounds and topic prerequisite thresholds.'
             : 'View system-wide study policies and prerequisite parameters configured by mentors.'}

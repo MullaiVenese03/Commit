@@ -177,41 +177,41 @@ const TopicModalContent: React.FC<TopicModalProps> = ({
         />
 
         {candidatePrerequisites.length > 0 && (
-          <div className="space-y-2 pt-2 border-t border-zinc-100">
+          <div className="space-y-2 pt-3 border-t border-[#E4E2DE]">
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-semibold text-zinc-700 tracking-tight">
+              <label className="block text-xs font-semibold text-[#24242A] tracking-tight select-none">
                 Prerequisite Milestones
               </label>
-              <span className="text-[11px] text-zinc-400">
+              <span className="text-[11px] text-[#777782] tabular-nums select-none">
                 Selected {selectedPrereqIds.length}/{maxPrereqs} max
               </span>
             </div>
-            <p className="text-[11px] text-zinc-500">
+            <p className="text-[11px] text-[#777782]">
               Select milestones that must be completed before this topic unlocks.
             </p>
 
-            <div className="max-h-48 overflow-y-auto space-y-1.5 pr-1 border border-zinc-200/90 rounded-md p-2 bg-zinc-50/50">
+            <div className="max-h-48 overflow-y-auto space-y-1.5 pr-1 border border-[#E4E2DE] rounded-xl p-2 bg-[#F8F7F4]">
               {candidatePrerequisites.map((t) => {
                 const isChecked = selectedPrereqIds.includes(t.id);
                 return (
                   <label
                     key={t.id}
-                    className={`flex items-center gap-2.5 p-2 rounded text-xs transition cursor-pointer select-none ${
+                    className={`flex items-center gap-2.5 p-2 rounded-lg text-xs transition cursor-pointer select-none ${
                       isChecked
-                        ? 'bg-blue-50/80 border border-blue-200 text-blue-900 font-medium'
-                        : 'bg-white border border-zinc-200/80 text-zinc-700 hover:bg-zinc-50'
+                        ? 'bg-[#EEEEFC] border border-[#5557C8]/30 text-[#5557C8] font-medium'
+                        : 'bg-white border border-[#E4E2DE] text-[#24242A] hover:bg-[#F8F7F4]'
                     }`}
                   >
                     <input
                       type="checkbox"
                       checked={isChecked}
                       onChange={() => togglePrereq(t.id)}
-                      className="rounded border-zinc-300 text-blue-600 focus:ring-blue-500 w-3.5 h-3.5 cursor-pointer"
+                      className="rounded border-[#E4E2DE] text-[#5557C8] focus:ring-[#5557C8] w-3.5 h-3.5 cursor-pointer"
                     />
-                    <span className="text-zinc-400 font-mono text-[10px]">#{t.position}</span>
-                    <span className="truncate flex-1">{t.title}</span>
+                    <span className="text-[#777782] font-mono text-[10px]">#{t.position}</span>
+                    <span className="truncate flex-1 font-medium">{t.title}</span>
                     {t.isCompleted && (
-                      <span className="text-[10px] text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                      <span className="text-[10px] text-[#278568] bg-[#278568]/12 px-2 py-0.5 rounded-md border border-[#278568]/25 font-medium">
                         Completed
                       </span>
                     )}

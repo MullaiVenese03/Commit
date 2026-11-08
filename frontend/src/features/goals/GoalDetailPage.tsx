@@ -47,9 +47,9 @@ export const GoalDetailPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center py-24">
-        <Spinner size="lg" className="text-zinc-600" />
-        <p className="text-xs text-zinc-500 mt-3 font-medium">Loading goal curriculum...</p>
+      <div className="flex flex-col items-center justify-center py-24 min-h-[50vh]">
+        <Spinner size="lg" className="text-[#5557C8]" />
+        <p className="text-xs text-[#777782] mt-3 font-medium">Loading goal curriculum...</p>
       </div>
     );
   }
@@ -65,7 +65,7 @@ export const GoalDetailPage: React.FC = () => {
         >
           Back to Goals
         </Button>
-        <div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg text-xs">
+        <div className="p-4 bg-[#C45C5C]/10 border border-[#C45C5C]/25 text-[#C45C5C] rounded-xl text-xs">
           {error ? getErrorMessage(error) : 'Study goal not found.'}
         </div>
       </div>
@@ -112,12 +112,12 @@ export const GoalDetailPage: React.FC = () => {
         <Breadcrumbs items={breadcrumbsList} />
 
         {!isMentor && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
             <Button
-              variant="outline"
+              variant="secondary"
               size="sm"
               onClick={() => setIsEditGoalModalOpen(true)}
-              leftIcon={<Pencil className="w-3.5 h-3.5" />}
+              leftIcon={<Pencil className="w-3.5 h-3.5 text-[#777782]" />}
             >
               Edit Goal
             </Button>
@@ -125,8 +125,8 @@ export const GoalDetailPage: React.FC = () => {
               variant="outline"
               size="sm"
               onClick={() => setIsDeleteGoalModalOpen(true)}
-              leftIcon={<Trash2 className="w-3.5 h-3.5 text-rose-600" />}
-              className="text-rose-600 hover:bg-rose-50 hover:border-rose-200"
+              leftIcon={<Trash2 className="w-3.5 h-3.5 text-[#C45C5C]" />}
+              className="text-[#C45C5C] hover:bg-[#C45C5C]/10 hover:border-[#C45C5C]/30"
             >
               Delete
             </Button>
@@ -135,11 +135,11 @@ export const GoalDetailPage: React.FC = () => {
       </div>
 
       {/* Goal Overview Card */}
-      <div className="bg-white rounded-lg border border-zinc-200/90 p-6 shadow-2xs">
+      <div className="bg-white rounded-xl border border-[#E4E2DE] p-5 sm:p-6 shadow-xs">
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
           <div className="flex-1 space-y-2">
-            <div className="flex items-center gap-2 flex-wrap text-xs text-zinc-500">
-              <span className="font-semibold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200/80 text-[11px] uppercase tracking-wider">
+            <div className="flex items-center gap-2 flex-wrap text-xs text-[#777782]">
+              <span className="font-semibold text-[#5557C8] bg-[#EEEEFC] px-2.5 py-0.5 rounded-md border border-[#5557C8]/25 text-[11px] uppercase tracking-wider select-none">
                 Curriculum
               </span>
               <span>•</span>
@@ -147,38 +147,38 @@ export const GoalDetailPage: React.FC = () => {
               {goal.learner?.name && isMentor && (
                 <>
                   <span>•</span>
-                  <span className="font-semibold text-zinc-700">
+                  <span className="font-semibold text-[#24242A]">
                     Learner: {goal.learner.name}
                   </span>
                 </>
               )}
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-zinc-950">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#24242A]">
               {goal.title}
             </h1>
 
             {goal.description && (
-              <p className="text-xs text-zinc-600 leading-relaxed max-w-3xl pt-1">
+              <p className="text-xs text-[#777782] leading-relaxed max-w-3xl pt-1">
                 {goal.description}
               </p>
             )}
 
             {totalMinutesStudied > 0 && (
-              <div className="flex items-center gap-1.5 pt-2 text-xs text-zinc-600">
-                <Clock className="w-3.5 h-3.5 text-zinc-400" />
-                <span>Total focused study time: <strong className="text-zinc-900 font-semibold">{formatMinutes(totalMinutesStudied)}</strong></span>
+              <div className="flex items-center gap-1.5 pt-2 text-xs text-[#777782]">
+                <Clock className="w-3.5 h-3.5 text-[#777782]" />
+                <span>Total focused study time: <strong className="text-[#24242A] font-semibold tabular-nums">{formatMinutes(totalMinutesStudied)}</strong></span>
               </div>
             )}
           </div>
 
-          <div className="w-full md:w-64 shrink-0 p-4 bg-zinc-50/70 rounded-lg border border-zinc-200/80 space-y-2.5">
+          <div className="w-full md:w-64 shrink-0 p-4 bg-[#F8F7F4] rounded-xl border border-[#E4E2DE] space-y-2.5">
             <div className="flex justify-between items-center text-xs">
-              <span className="font-semibold text-zinc-600">Completion</span>
-              <span className="font-bold text-zinc-950 tabular-nums">{progressPercentage}%</span>
+              <span className="font-semibold text-[#777782] select-none">Completion</span>
+              <span className="font-bold text-[#24242A] tabular-nums">{progressPercentage}%</span>
             </div>
             <ProgressBar value={progressPercentage} size="md" variant={progressPercentage === 100 ? 'success' : 'default'} />
-            <div className="flex justify-between text-[11px] text-zinc-500 pt-1 border-t border-zinc-200/60">
+            <div className="flex justify-between text-[11px] text-[#777782] pt-1 border-t border-[#E4E2DE]">
               <span>{completedTopics} completed</span>
               <span>{totalTopics - completedTopics} remaining</span>
             </div>
@@ -188,24 +188,24 @@ export const GoalDetailPage: React.FC = () => {
 
       {/* Topics Section */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between flex-wrap gap-3 pb-2 border-b border-zinc-200/80">
+        <div className="flex items-center justify-between flex-wrap gap-3 pb-3 border-b border-[#E4E2DE]">
           <div>
-            <h2 className="text-base font-bold tracking-tight text-zinc-950">
+            <h2 className="text-sm sm:text-base font-bold tracking-tight text-[#24242A]">
               Curriculum Topics ({totalTopics})
             </h2>
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-[#777782]">
               Prerequisite progression sequence. Unlocked topics are available for study and completion.
             </p>
           </div>
 
           {!isMentor && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               {totalTopics > 1 && (
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   onClick={() => setIsReorderModalOpen(true)}
-                  leftIcon={<ArrowUpDown className="w-3.5 h-3.5" />}
+                  leftIcon={<ArrowUpDown className="w-3.5 h-3.5 text-[#777782]" />}
                 >
                   Reorder Sequence
                 </Button>
@@ -226,7 +226,7 @@ export const GoalDetailPage: React.FC = () => {
           <EmptyState
             title="No topics in this curriculum yet"
             description="Add topics to break this goal into actionable milestones with prerequisite relationships."
-            icon={<BookOpen className="w-5 h-5 text-zinc-400" />}
+            icon={<BookOpen className="w-5 h-5 text-[#777782]" />}
             actionLabel={!isMentor ? 'Add First Topic' : undefined}
             onAction={!isMentor ? () => setIsAddTopicModalOpen(true) : undefined}
           />
@@ -316,12 +316,12 @@ export const GoalDetailPage: React.FC = () => {
       >
         <div className="space-y-3">
           {topicDeleteError && (
-            <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 rounded text-xs">
+            <div className="p-3 bg-[#C45C5C]/10 border border-[#C45C5C]/25 text-[#C45C5C] rounded-xl text-xs">
               {topicDeleteError}
             </div>
           )}
-          <p className="text-xs text-zinc-600 leading-normal">
-            Are you sure you want to delete <strong className="text-zinc-900 font-semibold">{topicToDelete?.title}</strong>? Any study sessions logged under this topic and dependent prerequisite links will be removed.
+          <p className="text-xs text-[#777782] leading-normal">
+            Are you sure you want to delete <strong className="text-[#24242A] font-semibold">{topicToDelete?.title}</strong>? Any study sessions logged under this topic and dependent prerequisite links will be removed.
           </p>
         </div>
       </Modal>

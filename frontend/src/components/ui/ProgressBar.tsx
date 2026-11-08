@@ -27,24 +27,23 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     lg: 'h-2.5',
   }[size];
 
-  // Restrained professional color scale
+  // Restrained professional macOS Warm Graphite & Muted Indigo palette
   const getColorClass = (pct: number) => {
-    if (variant === 'success' || pct >= 100) return 'bg-emerald-600';
-    if (pct >= 50) return 'bg-blue-600';
-    if (pct > 0) return 'bg-sky-600';
-    return 'bg-zinc-300';
+    if (variant === 'success' || pct >= 100) return 'bg-[#278568]';
+    if (pct > 0) return 'bg-[#5557C8]';
+    return 'bg-[#E4E2DE]';
   };
 
   return (
     <div className={`w-full ${className}`}>
       {(label || showValue) && (
-        <div className="flex justify-between items-center text-xs text-zinc-600 mb-1.5 font-medium">
+        <div className="flex justify-between items-center text-xs text-[#777782] mb-1.5 font-medium select-none">
           {label && <span className="truncate pr-2">{label}</span>}
-          {showValue && <span className="font-semibold text-zinc-900 tabular-nums shrink-0">{percentage}%</span>}
+          {showValue && <span className="font-semibold text-[#24242A] tabular-nums shrink-0">{percentage}%</span>}
         </div>
       )}
       <div
-        className={`w-full bg-zinc-100 rounded-full overflow-hidden ${sizeClasses}`}
+        className={`w-full bg-[#E4E2DE]/70 rounded-full overflow-hidden ${sizeClasses}`}
         role="progressbar"
         aria-valuenow={value}
         aria-valuemin={0}

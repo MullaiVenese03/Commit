@@ -22,13 +22,13 @@ export const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items, className = '' 
           const isLast = idx === items.length - 1;
           return (
             <li key={idx} className="flex items-center">
-              {idx > 0 && <ChevronRight className="w-3.5 h-3.5 text-zinc-400 mx-1 shrink-0" />}
+              {idx > 0 && <ChevronRight className="w-3.5 h-3.5 text-zinc-400 mx-1 shrink-0 pointer-events-none" />}
               {item.to && !isLast ? (
                 <Link
                   to={item.to}
-                  className="text-zinc-600 hover:text-zinc-900 transition-colors"
+                  className="text-zinc-600 hover:text-zinc-900 transition-colors py-0.5 px-1 rounded-sm"
                 >
-                  {item.label}
+                  <span className="pointer-events-none">{item.label}</span>
                 </Link>
               ) : (
                 <span className={isLast ? 'text-zinc-900 font-semibold truncate max-w-xs sm:max-w-md' : 'text-zinc-600'}>

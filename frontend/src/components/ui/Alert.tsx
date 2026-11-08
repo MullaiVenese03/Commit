@@ -17,17 +17,17 @@ export const Alert: React.FC<AlertProps> = ({
   className = '',
 }) => {
   const variantStyles = {
-    info: 'bg-sky-50/70 border-sky-200/80 text-sky-950',
-    success: 'bg-emerald-50/70 border-emerald-200/80 text-emerald-950',
-    warning: 'bg-amber-50/70 border-amber-200/80 text-amber-950',
-    error: 'bg-rose-50/70 border-rose-200/80 text-rose-950',
+    info: 'bg-[#EEEEFC] border-[#5557C8]/25 text-[#24242A]',
+    success: 'bg-[#278568]/10 border-[#278568]/25 text-[#24242A]',
+    warning: 'bg-[#B98237]/10 border-[#B98237]/25 text-[#24242A]',
+    error: 'bg-[#C45C5C]/10 border-[#C45C5C]/25 text-[#24242A]',
   }[variant];
 
   const iconStyles = {
-    info: 'text-sky-600',
-    success: 'text-emerald-600',
-    warning: 'text-amber-600',
-    error: 'text-rose-600',
+    info: 'text-[#5557C8]',
+    success: 'text-[#278568]',
+    warning: 'text-[#B98237]',
+    error: 'text-[#C45C5C]',
   }[variant];
 
   const IconComponent = {
@@ -44,17 +44,17 @@ export const Alert: React.FC<AlertProps> = ({
     >
       <IconComponent className={`w-4 h-4 shrink-0 mt-0.5 ${iconStyles}`} />
       <div className="flex-1 min-w-0">
-        {title && <h5 className="font-semibold mb-0.5 text-xs tracking-tight">{title}</h5>}
+        {title && <h5 className="font-semibold mb-0.5 text-xs tracking-tight text-[#24242A]">{title}</h5>}
         <div className="text-xs leading-relaxed opacity-95">{children}</div>
       </div>
       {onClose && (
         <button
           type="button"
           onClick={onClose}
-          className="ml-auto -mx-1 -my-1 rounded-md p-1 inline-flex text-zinc-400 hover:text-zinc-700 hover:bg-black/5 cursor-pointer transition"
+          className="ml-auto -mx-1 -my-1 rounded-md p-1 inline-flex text-[#777782] hover:text-[#24242A] hover:bg-[#24242A]/5 cursor-pointer transition"
           aria-label="Close"
         >
-          <X className="w-3.5 h-3.5" />
+          <X className="w-3.5 h-3.5 pointer-events-none" />
         </button>
       )}
     </div>

@@ -69,12 +69,12 @@ export const TopicCard: React.FC<TopicCardProps> = ({
   return (
     <>
       <div
-        className={`rounded-lg border p-4 sm:p-5 transition-all duration-150 ${
+        className={`rounded-xl border p-4 sm:p-5 transition-all duration-150 ${
           isCompleted
-            ? 'bg-emerald-50/20 border-emerald-200/90'
+            ? 'bg-[#278568]/5 border-[#278568]/25 shadow-2xs'
             : !isUnlocked
-            ? 'bg-zinc-50/80 border-zinc-200 opacity-95'
-            : 'bg-white border-zinc-200 shadow-2xs hover:border-zinc-300'
+            ? 'bg-[#ECEBE7]/60 border-[#E4E2DE] opacity-90'
+            : 'bg-white border-[#E4E2DE] shadow-xs hover:border-[#5557C8]/40'
         }`}
       >
         {actionError && (
@@ -86,7 +86,7 @@ export const TopicCard: React.FC<TopicCardProps> = ({
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-1.5">
-              <span className="text-[11px] font-mono font-bold text-zinc-500 bg-zinc-100 border border-zinc-200 px-1.5 py-0.5 rounded">
+              <span className="text-[11px] font-mono font-bold text-[#777782] bg-[#F8F7F4] border border-[#E4E2DE] px-1.5 py-0.5 rounded-md tabular-nums">
                 #{topic.position}
               </span>
 
@@ -105,30 +105,30 @@ export const TopicCard: React.FC<TopicCardProps> = ({
               )}
 
               {isCompleted && topic.completedAt && (
-                <span className="text-[11px] text-zinc-400">
+                <span className="text-[11px] text-[#777782]">
                   Completed on {formatDate(topic.completedAt)}
                 </span>
               )}
             </div>
 
             <h4
-              className={`text-base font-bold tracking-tight ${
-                isCompleted ? 'text-zinc-700 line-through decoration-zinc-400' : 'text-zinc-900'
+              className={`text-sm sm:text-base font-bold tracking-tight ${
+                isCompleted ? 'text-[#777782] line-through decoration-[#777782]/40' : 'text-[#24242A]'
               }`}
             >
               {topic.title}
             </h4>
 
             {topic.description && (
-              <p className="text-xs text-zinc-500 mt-1 leading-relaxed">
+              <p className="text-xs text-[#777782] mt-1 leading-relaxed">
                 {topic.description}
               </p>
             )}
 
             {/* Prerequisite relationships display */}
             {prerequisites.length > 0 && (
-              <div className="mt-3 pt-2.5 border-t border-zinc-100">
-                <span className="block text-[10px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5">
+              <div className="mt-3 pt-2.5 border-t border-[#E4E2DE]">
+                <span className="block text-[10px] font-semibold text-[#777782] uppercase tracking-wider mb-1.5 select-none">
                   Prerequisites ({prerequisites.length}):
                 </span>
                 <div className="flex flex-wrap gap-1.5">
@@ -145,11 +145,11 @@ export const TopicCard: React.FC<TopicCardProps> = ({
 
             {/* Missing Prerequisites alert if locked */}
             {!isCompleted && !isUnlocked && missingPrerequisites.length > 0 && (
-              <div className="mt-3 flex items-start gap-2.5 text-xs text-amber-900 bg-amber-50/70 p-3 rounded border border-amber-200/80">
-                <AlertCircle className="w-4 h-4 shrink-0 text-amber-600 mt-0.5" />
+              <div className="mt-3 flex items-start gap-2.5 text-xs text-[#B98237] bg-[#B98237]/10 p-3 rounded-lg border border-[#B98237]/25">
+                <AlertCircle className="w-4 h-4 shrink-0 text-[#B98237] mt-0.5" />
                 <div>
-                  <span className="font-semibold text-amber-950">Milestone Locked:</span> Complete the following prerequisite{missingPrerequisites.length > 1 ? 's' : ''} to unlock this topic:
-                  <ul className="list-disc list-inside mt-1 font-medium space-y-0.5 text-amber-800">
+                  <span className="font-semibold text-[#24242A]">Milestone Locked:</span> Complete the following prerequisite{missingPrerequisites.length > 1 ? 's' : ''} to unlock this topic:
+                  <ul className="list-disc list-inside mt-1 font-medium space-y-0.5 text-[#B98237]">
                     {missingPrerequisites.map((m) => (
                       <li key={m.id}>{m.title}</li>
                     ))}
@@ -165,10 +165,10 @@ export const TopicCard: React.FC<TopicCardProps> = ({
               <button
                 type="button"
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="p-1 rounded text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 cursor-pointer transition"
+                className="p-1.5 rounded-md text-[#777782] hover:text-[#24242A] hover:bg-[#24242A]/5 cursor-pointer transition"
                 aria-label="Topic options"
               >
-                <MoreVertical className="w-4 h-4" />
+                <MoreVertical className="w-4 h-4 pointer-events-none" />
               </button>
 
               {menuOpen && (
@@ -177,7 +177,7 @@ export const TopicCard: React.FC<TopicCardProps> = ({
                     className="fixed inset-0 z-20"
                     onClick={() => setMenuOpen(false)}
                   />
-                  <div className="absolute right-0 mt-1 w-32 bg-white rounded-md shadow-md border border-zinc-200 py-1 z-30">
+                  <div className="absolute right-0 mt-1 w-34 bg-white rounded-xl shadow-lg border border-[#E4E2DE] py-1 z-30 animate-in fade-in zoom-in-95 duration-100">
                     {onEdit && (
                       <button
                         type="button"
@@ -185,10 +185,10 @@ export const TopicCard: React.FC<TopicCardProps> = ({
                           setMenuOpen(false);
                           onEdit(topic);
                         }}
-                        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-zinc-700 hover:bg-zinc-50 cursor-pointer transition"
+                        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-[#24242A] hover:bg-[#F8F7F4] cursor-pointer transition font-medium"
                       >
-                        <Pencil className="w-3.5 h-3.5 text-zinc-400" />
-                        Edit Topic
+                        <Pencil className="w-3.5 h-3.5 text-[#777782] shrink-0 pointer-events-none" />
+                        <span className="pointer-events-none">Edit Topic</span>
                       </button>
                     )}
                     {onDelete && (
@@ -198,10 +198,10 @@ export const TopicCard: React.FC<TopicCardProps> = ({
                           setMenuOpen(false);
                           onDelete(topic);
                         }}
-                        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-rose-600 hover:bg-rose-50 cursor-pointer transition"
+                        className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-[#C45C5C] hover:bg-[#C45C5C]/10 cursor-pointer transition font-medium"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
-                        Delete
+                        <Trash2 className="w-3.5 h-3.5 shrink-0 pointer-events-none" />
+                        <span className="pointer-events-none">Delete</span>
                       </button>
                     )}
                   </div>
@@ -213,14 +213,14 @@ export const TopicCard: React.FC<TopicCardProps> = ({
 
         {/* Action bar for learner */}
         {!isReadOnly && (
-          <div className="mt-4 pt-3 border-t border-zinc-100 flex items-center justify-between flex-wrap gap-2">
+          <div className="mt-3.5 pt-3 border-t border-[#E4E2DE] flex items-center justify-between flex-wrap gap-2.5">
             <div className="flex items-center gap-2">
               {onLogSession && isUnlocked && !isCompleted && (
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   onClick={() => onLogSession(topic)}
-                  leftIcon={<Clock className="w-3.5 h-3.5 text-zinc-500" />}
+                  leftIcon={<Clock className="w-3.5 h-3.5 text-[#777782]" />}
                 >
                   Log Study Time
                 </Button>
@@ -241,7 +241,7 @@ export const TopicCard: React.FC<TopicCardProps> = ({
                   }}
                   isLoading={reopenMutation.isPending}
                   leftIcon={<RotateCcw className="w-3.5 h-3.5" />}
-                  className="text-zinc-600 hover:text-zinc-900"
+                  className="text-[#777782] hover:text-[#24242A]"
                 >
                   Reopen Topic
                 </Button>
@@ -297,12 +297,13 @@ export const TopicCard: React.FC<TopicCardProps> = ({
           </>
         }
       >
-        <div className="space-y-3 text-xs text-zinc-600 leading-normal">
+        <div className="space-y-3 text-xs text-[#777782] leading-normal">
           <p>
-            Reopening <strong className="text-zinc-900 font-semibold">{topic.title}</strong> will reset this milestone to incomplete.
+            Reopening <strong className="text-[#24242A] font-semibold">{topic.title}</strong> will reset this milestone to incomplete.
           </p>
-          <div className="p-3 bg-amber-50 border border-amber-200/80 rounded text-amber-900">
-            <strong>Cascading Re-lock Notice:</strong> Because subsequent topics depend on this prerequisite, any dependent topics currently marked complete will automatically be reset to incomplete and re-locked until this topic is completed again.
+          <div className="p-3 bg-[#B98237]/10 border border-[#B98237]/25 rounded-lg text-[#B98237]">
+            <strong className="text-[#24242A] block mb-0.5">Cascading Re-lock Notice:</strong>
+            Because subsequent milestones depend on this prerequisite, any dependent topics currently marked complete will automatically be reset to incomplete and re-locked until this topic is completed again.
           </div>
         </div>
       </Modal>

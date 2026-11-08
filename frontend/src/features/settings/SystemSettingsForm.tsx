@@ -61,7 +61,7 @@ export const SystemSettingsForm: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="py-12 text-center text-xs text-zinc-400">
+      <div className="py-12 text-center text-xs text-[#777782]">
         Loading system configuration parameters...
       </div>
     );
@@ -85,6 +85,7 @@ export const SystemSettingsForm: React.FC = () => {
             type="number"
             min={1}
             max={60}
+            hideSpinners
             requiredIndicator
             disabled={!isMentor || isSubmitting}
             helperText="Allowed range: 1 to 60 minutes (default: 5)"
@@ -99,6 +100,7 @@ export const SystemSettingsForm: React.FC = () => {
             type="number"
             min={60}
             max={1440}
+            hideSpinners
             requiredIndicator
             disabled={!isMentor || isSubmitting}
             helperText="Allowed range: 60 to 1440 minutes (default: 480)"
@@ -113,6 +115,7 @@ export const SystemSettingsForm: React.FC = () => {
             type="number"
             min={1}
             max={20}
+            hideSpinners
             requiredIndicator
             disabled={!isMentor || isSubmitting}
             helperText="Allowed range: 1 to 20 prerequisites per milestone (default: 5)"
@@ -123,14 +126,14 @@ export const SystemSettingsForm: React.FC = () => {
       </div>
 
       {settings && (
-        <div className="p-3 bg-zinc-50 rounded border border-zinc-200/80 text-xs text-zinc-500 space-y-1">
+        <div className="p-3.5 bg-[#F8F7F4] rounded-xl border border-[#E4E2DE] text-xs text-[#777782] space-y-1">
           <p>
-            <span className="font-semibold text-zinc-700">Last Modified:</span>{' '}
+            <span className="font-semibold text-[#24242A]">Last Modified:</span>{' '}
             {formatDate(settings.updatedAt)}
           </p>
           {settings.updatedBy?.name && (
             <p>
-              <span className="font-semibold text-zinc-700">Modified By:</span>{' '}
+              <span className="font-semibold text-[#24242A]">Modified By:</span>{' '}
               {settings.updatedBy.name} ({settings.updatedBy.email})
             </p>
           )}

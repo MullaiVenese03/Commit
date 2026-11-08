@@ -16,36 +16,36 @@ export const StatCard: React.FC<StatCardProps> = ({
   value,
   subtitle,
   icon,
-  iconBgColor = 'bg-zinc-100 text-zinc-700',
+  iconBgColor = 'bg-[#F8F7F4] text-[#24242A] border border-[#E4E2DE]',
   className = '',
   badge,
   variant = 'default',
 }) => {
   return (
     <div
-      className={`rounded-lg border p-4 transition-all duration-150 ${
+      className={`rounded-xl border p-4 sm:p-5 transition-all duration-150 ${
         variant === 'highlight'
-          ? 'bg-blue-50/40 border-blue-200/90 shadow-2xs'
-          : 'bg-white border-zinc-200/90 shadow-2xs'
+          ? 'bg-[#EEEEFC]/50 border-[#5557C8]/25 shadow-2xs'
+          : 'bg-white border-[#E4E2DE] shadow-xs'
       } ${className}`}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-semibold text-zinc-500 uppercase tracking-wider select-none">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[11px] font-semibold text-[#777782] uppercase tracking-wider select-none">
               {title}
             </span>
             {badge}
           </div>
-          <div className="text-2xl font-bold text-zinc-900 mt-1 tracking-tight tabular-nums truncate">
+          <div className="text-xl sm:text-2xl font-bold text-[#24242A] mt-1.5 tracking-tight tabular-nums truncate">
             {value}
           </div>
           {subtitle && (
-            <p className="text-xs text-zinc-500 mt-1 font-medium leading-normal truncate">{subtitle}</p>
+            <p className="text-xs text-[#777782] mt-1 font-medium leading-normal truncate">{subtitle}</p>
           )}
         </div>
         {icon && (
-          <div className={`p-2 rounded-md ${iconBgColor} shrink-0`}>
+          <div className={`p-2.5 rounded-xl ${iconBgColor} shrink-0 flex items-center justify-center`}>
             {icon}
           </div>
         )}

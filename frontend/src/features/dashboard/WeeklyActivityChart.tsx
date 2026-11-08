@@ -1,6 +1,6 @@
 import React from 'react';
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
-import { Clock } from 'lucide-react';
+import { Calendar, Clock } from 'lucide-react';
 import type { StudySession } from '../../types';
 import { formatMinutes } from '../../utils/formatters';
 
@@ -10,7 +10,7 @@ interface WeeklyActivityChartProps {
 
 export const WeeklyActivityChart: React.FC<WeeklyActivityChartProps> = ({ sessions }) => {
   // Compute the last 7 consecutive days up to today
-  const daysData = React.useMemo(() => {
+  const { daysData, dateRangeLabel } = React.useMemo(() => {
     const today = new Date();
     const result: Array<{
       dateKey: string;
@@ -18,6 +18,9 @@ export const WeeklyActivityChart: React.FC<WeeklyActivityChartProps> = ({ sessio
       fullDate: string;
       minutes: number;
     }> = [];
+
+    let earliestDate = '';
+    let latestDate = '';
 
     for (let i = 6; i >= 0; i--) {
       const d = new Date(today);
@@ -29,8 +32,12 @@ export const WeeklyActivityChart: React.FC<WeeklyActivityChartProps> = ({ sessio
 
       const weekday = d.toLocaleDateString('en-US', { weekday: 'short' });
       const dayNum = d.getDate();
+      const formattedMonthDay = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 
-      // Sum minutes studied on this specific day
+      if (i === 6) earliestDate = formattedMonthDay;
+      if (i === 0) latestDate = formattedMonthDay;
+
+      // Sum minutes studied on this specific day from actual sessions
       const dayMinutes = sessions
         .filter((s) => s.studyDate && s.studyDate.startsWith(dateKey))
         .reduce((sum, s) => sum + s.minutes, 0);
@@ -43,7 +50,10 @@ export const WeeklyActivityChart: React.FC<WeeklyActivityChartProps> = ({ sessio
       });
     }
 
-    return result;
+    return {
+      daysData: result,
+      dateRangeLabel: `${earliestDate} – ${latestDate}`,
+    };
   }, [sessions]);
 
   const totalWeeklyMinutes = daysData.reduce((acc, curr) => acc + curr.minutes, 0);
@@ -51,43 +61,51 @@ export const WeeklyActivityChart: React.FC<WeeklyActivityChartProps> = ({ sessio
 
   return (
     <div className="space-y-3">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
-          <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wider block">
-            Weekly Activity
-          </span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs font-semibold text-[#777782] uppercase tracking-wider block select-none">
+              Weekly Activity
+            </span>
+            <span className="text-[#E4E2DE]">•</span>
+            <span className="text-[11px] text-[#777782] flex items-center gap-1">
+              <Calendar className="w-3 h-3 text-[#777782]" />
+              <span>{dateRangeLabel}</span>
+            </span>
+          </div>
           <div className="flex items-baseline gap-2 mt-0.5">
-            <span className="text-xl font-bold text-zinc-900 tracking-tight tabular-nums">
+            <span className="text-xl font-bold text-[#24242A] tracking-tight tabular-nums">
               {formatMinutes(totalWeeklyMinutes)}
             </span>
-            <span className="text-xs text-zinc-500 font-medium">studied in past 7 days</span>
+            <span className="text-xs text-[#777782] font-medium">recorded in past 7 days</span>
           </div>
         </div>
-        <div className="hidden sm:flex items-center gap-1 text-xs text-zinc-500 bg-zinc-50 border border-zinc-200/80 px-2 py-1 rounded">
-          <Clock className="w-3.5 h-3.5 text-zinc-400" />
-          <span>Daily Avg: {formatMinutes(Math.round(totalWeeklyMinutes / 7))}</span>
+
+        <div className="flex items-center gap-1 text-xs text-[#777782] bg-[#F8F7F4] border border-[#E4E2DE] px-2.5 py-1 rounded-lg self-start sm:self-auto select-none">
+          <Clock className="w-3.5 h-3.5 text-[#777782] shrink-0" />
+          <span>Daily Avg: <strong className="text-[#24242A]">{formatMinutes(Math.round(totalWeeklyMinutes / 7))}</strong></span>
         </div>
       </div>
 
       <div className="h-44 w-full pt-2">
         {totalWeeklyMinutes === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-center p-4 bg-zinc-50/50 rounded-md border border-dashed border-zinc-200">
-            <Clock className="w-5 h-5 text-zinc-300 mb-1" />
-            <p className="text-xs font-medium text-zinc-600">No study time recorded in the past 7 days</p>
-            <p className="text-[11px] text-zinc-400 mt-0.5">Log a study session to begin building your consistency graph</p>
+          <div className="h-full flex flex-col items-center justify-center text-center p-4 bg-[#F8F7F4] rounded-xl border border-dashed border-[#E4E2DE]">
+            <Clock className="w-5 h-5 text-[#777782] mb-1" />
+            <p className="text-xs font-medium text-[#24242A]">No study time recorded in the past 7 days</p>
+            <p className="text-[11px] text-[#777782] mt-0.5">Log a study session to begin building your consistency graph</p>
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={daysData} margin={{ top: 8, right: 8, left: -24, bottom: 0 }}>
               <XAxis
                 dataKey="label"
-                tick={{ fontSize: 11, fill: '#71717a' }}
-                axisLine={{ stroke: '#e4e4e7' }}
+                tick={{ fontSize: 11, fill: '#777782' }}
+                axisLine={{ stroke: '#E4E2DE' }}
                 tickLine={false}
               />
               <YAxis
                 domain={[0, Math.ceil(maxDailyMinutes / 30) * 30]}
-                tick={{ fontSize: 10, fill: '#71717a' }}
+                tick={{ fontSize: 10, fill: '#777782' }}
                 tickFormatter={(val) => `${val}m`}
                 axisLine={false}
                 tickLine={false}
@@ -102,16 +120,17 @@ export const WeeklyActivityChart: React.FC<WeeklyActivityChartProps> = ({ sessio
                 }
                 contentStyle={{
                   backgroundColor: '#ffffff',
-                  borderRadius: '6px',
-                  border: '1px solid #e4e4e7',
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+                  borderRadius: '12px',
+                  border: '1px solid #E4E2DE',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                   fontSize: '12px',
-                  padding: '6px 10px',
+                  padding: '8px 12px',
+                  color: '#24242A',
                 }}
               />
               <Bar
                 dataKey="minutes"
-                fill="#2563eb"
+                fill="#5557C8"
                 radius={[4, 4, 0, 0]}
                 maxBarSize={36}
               />

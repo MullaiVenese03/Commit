@@ -86,6 +86,27 @@ describe('TopicsService', () => {
       ).rejects.toThrow('A topic cannot depend on itself');
     });
 
+    it('enforces maximum prerequisite setting and rejects exceeding prerequisites', async () => {
+      mockPrismaService.topic.findUnique.mockResolvedValue({
+        id: 'topic-A',
+        goalId: 'goal-1',
+        isCompleted: false,
+        goal: mockGoal,
+        prerequisites: [],
+      });
+
+      // System setting permits max 5 prerequisites; caller provides 6
+      const sixPrereqs = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6'];
+
+      await expect(
+        service.update(
+          'topic-A',
+          { prerequisiteTopicIds: sixPrereqs },
+          mockLearner,
+        ),
+      ).rejects.toThrow('A topic cannot have more than 5 prerequisites');
+    });
+
     it('rejects mutual dependencies (A -> B and B -> A)', async () => {
       // Existing graph: topic-A depends on topic-B
       // Attempt to update topic-B to depend on topic-A

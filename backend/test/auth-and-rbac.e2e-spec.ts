@@ -242,6 +242,47 @@ describe('Auth & Role-Based Access Control (e2e)', () => {
       const res = await request(app.getHttpServer()).get('/api/v1/auth/me');
       expect(res.status).toBe(401);
     });
+
+    it('POST /api/v1/auth/login - valid login returns 200, JWT token, and user profile without passwordHash', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({
+          email: 'alex.mercer@commit.dev',
+          password: 'Learner123!Pass',
+        });
+
+      expect(res.status).toBe(200);
+      expect(res.body).toHaveProperty('accessToken');
+      expect(res.body.user).toBeDefined();
+      expect(res.body.user.email).toBe('alex.mercer@commit.dev');
+      expect(res.body.user.role).toBe('LEARNER');
+      expect(res.body.user.passwordHash).toBeUndefined();
+    });
+
+    it('SEC-01: verifies passwords stored in the database are hashed with argon2 and never plain text', async () => {
+      const dbUser = await prisma.user.findUnique({
+        where: { email: 'alex.mercer@commit.dev' },
+      });
+
+      expect(dbUser).toBeDefined();
+      expect(dbUser!.passwordHash).not.toBe('Learner123!Pass');
+      expect(dbUser!.passwordHash.startsWith('$argon2id$')).toBe(true);
+    });
+
+    it('GET /api/v1/goals - rejects unauthenticated request without token with 401 Unauthorized', async () => {
+      const res = await request(app.getHttpServer()).get('/api/v1/goals');
+      expect(res.status).toBe(401);
+    });
+
+    it('POST /api/v1/auth/login - rejects malformed body with missing password (400 Bad Request)', async () => {
+      const res = await request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .send({
+          email: 'alex.mercer@commit.dev',
+        });
+
+      expect(res.status).toBe(400);
+    });
   });
 
   describe('Learner Authorization Boundaries', () => {
@@ -472,6 +513,73 @@ describe('Auth & Role-Based Access Control (e2e)', () => {
       expect(res.body.message).toContain('Circular dependency detected');
     });
 
+    it('rejects self-dependency where topic depends on itself (400 Bad Request)', async () => {
+      const res = await request(app.getHttpServer())
+        .patch(`/api/v1/topics/${createdTopic1Id}`)
+        .set('Authorization', `Bearer ${learner1Token}`)
+        .send({
+          prerequisiteTopicIds: [createdTopic1Id],
+        });
+
+      expect(res.status).toBe(400);
+      expect(res.body.message).toContain('A topic cannot depend on itself');
+    });
+
+    it('rejects multi-level indirect cycles (A -> B -> C -> A) (400 Bad Request)', async () => {
+      // 1. Create topic C depending on topic B (A -> B -> C)
+      const resC = await request(app.getHttpServer())
+        .post('/api/v1/topics')
+        .set('Authorization', `Bearer ${learner1Token}`)
+        .send({
+          goalId: learner1GoalId,
+          title: 'E2E Indirect Topic C',
+          position: 102,
+          prerequisiteTopicIds: [createdTopic2Id],
+        });
+      expect(resC.status).toBe(201);
+      const createdTopic3Id = resC.body.id;
+
+      // 2. Attempt to make topic A depend on topic C (creating cycle A -> B -> C -> A)
+      const cycleRes = await request(app.getHttpServer())
+        .patch(`/api/v1/topics/${createdTopic1Id}`)
+        .set('Authorization', `Bearer ${learner1Token}`)
+        .send({
+          prerequisiteTopicIds: [createdTopic3Id],
+        });
+
+      expect(cycleRes.status).toBe(400);
+      expect(cycleRes.body.message).toContain('Circular dependency detected');
+    });
+
+    it('enforces maximum prerequisite setting and rejects exceeding prerequisites (400 Bad Request)', async () => {
+      // 1. Mentor temporarily sets maxPrerequisitesPerTopic to 1
+      const updateSettingsRes = await request(app.getHttpServer())
+        .patch('/api/v1/settings')
+        .set('Authorization', `Bearer ${mentorToken}`)
+        .send({ maxPrerequisitesPerTopic: 1 });
+      expect(updateSettingsRes.status).toBe(200);
+
+      // 2. Create topic D attempting to have 2 prerequisites
+      const rejectRes = await request(app.getHttpServer())
+        .post('/api/v1/topics')
+        .set('Authorization', `Bearer ${learner1Token}`)
+        .send({
+          goalId: learner1GoalId,
+          title: 'E2E Exceeding Prereqs Topic',
+          position: 103,
+          prerequisiteTopicIds: [createdTopic1Id, createdTopic2Id],
+        });
+
+      expect(rejectRes.status).toBe(400);
+      expect(rejectRes.body.message).toContain('A topic cannot have more than 1 prerequisites');
+
+      // 3. Restore maxPrerequisitesPerTopic to 5
+      await request(app.getHttpServer())
+        .patch('/api/v1/settings')
+        .set('Authorization', `Bearer ${mentorToken}`)
+        .send({ maxPrerequisitesPerTopic: 5 });
+    });
+
     it('COR-02 rejects cross-goal prerequisites', async () => {
       // Fetch a topic from Learner 2's goal
       const l2TopicsRes = await request(app.getHttpServer())
@@ -623,6 +731,38 @@ describe('Auth & Role-Based Access Control (e2e)', () => {
 
       expect(res.status).toBe(201);
       expect(res.body).toHaveProperty('id');
+    });
+
+    it('rejects minutes below configured minimum (400 Bad Request)', async () => {
+      const today = new Date().toISOString().slice(0, 10);
+
+      const res = await request(app.getHttpServer())
+        .post('/api/v1/sessions')
+        .set('Authorization', `Bearer ${learner1Token}`)
+        .send({
+          topicId: 'c0000000-0000-0000-0000-000000000001',
+          studyDate: today,
+          minutes: 2, // Below minimum 5 minutes
+        });
+
+      expect(res.status).toBe(400);
+      expect(res.body.message).toContain('Session duration must be between');
+    });
+
+    it('rejects minutes above configured maximum (400 Bad Request)', async () => {
+      const today = new Date().toISOString().slice(0, 10);
+
+      const res = await request(app.getHttpServer())
+        .post('/api/v1/sessions')
+        .set('Authorization', `Bearer ${learner1Token}`)
+        .send({
+          topicId: 'c0000000-0000-0000-0000-000000000001',
+          studyDate: today,
+          minutes: 600, // Above maximum 480 minutes
+        });
+
+      expect(res.status).toBe(400);
+      expect(res.body.message).toContain('Session duration must be between');
     });
 
     it('rejects session logging for another learner\'s topic (403 Forbidden)', async () => {

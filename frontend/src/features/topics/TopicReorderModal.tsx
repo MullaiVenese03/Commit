@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowDown, ArrowUp, GripVertical } from 'lucide-react';
+import { ArrowDown, ArrowUp, CheckCircle2, GripVertical } from 'lucide-react';
 import { Alert } from '../../components/ui/Alert';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
@@ -43,7 +43,7 @@ const TopicReorderModalContent: React.FC<TopicReorderModalProps> = ({
     [...topics].sort((a, b) => a.position - b.position),
   );
   const [error, setError] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
   const reorderMutation = useReorderTopics();
 
   const moveUp = (index: number) => {
@@ -66,14 +66,14 @@ const TopicReorderModalContent: React.FC<TopicReorderModalProps> = ({
 
   const handleSave = async () => {
     setError(null);
-    setSuccessMessage(null);
+    setIsSaved(false);
     try {
       const topicIds = orderedTopics.map((t) => t.id);
       await reorderMutation.mutateAsync({ goalId, topicIds });
-      setSuccessMessage('Curriculum progression order successfully updated.');
+      setIsSaved(true);
       setTimeout(() => {
         onClose();
-      }, 400);
+      }, 500);
     } catch (err) {
       setError(getErrorMessage(err));
     }
@@ -84,7 +84,7 @@ const TopicReorderModalContent: React.FC<TopicReorderModalProps> = ({
       isOpen={isOpen}
       onClose={onClose}
       title="Reorder Curriculum Topics"
-      description="Adjust the sequential milestone order for this curriculum."
+      description="Adjust the sequential progression order for this curriculum."
       size="md"
       footer={
         <>
@@ -102,8 +102,9 @@ const TopicReorderModalContent: React.FC<TopicReorderModalProps> = ({
             onClick={handleSave}
             isLoading={reorderMutation.isPending}
             disabled={reorderMutation.isPending}
+            leftIcon={isSaved ? <CheckCircle2 className="w-3.5 h-3.5 text-white" /> : undefined}
           >
-            Save Order
+            {isSaved ? 'Order Saved!' : 'Save Order'}
           </Button>
         </>
       }
@@ -115,14 +116,8 @@ const TopicReorderModalContent: React.FC<TopicReorderModalProps> = ({
           </Alert>
         )}
 
-        {successMessage && (
-          <Alert variant="success">
-            {successMessage}
-          </Alert>
-        )}
-
-        <p className="text-xs text-zinc-500 leading-normal">
-          Use the up and down arrow controls to reorder milestones. Sequence positions update automatically.
+        <p className="text-xs text-[#777782] leading-normal">
+          Use the arrow buttons to position milestones. The order reflects the intended learning sequence.
         </p>
 
         <div className="space-y-1.5 max-h-80 overflow-y-auto pr-1">
@@ -133,19 +128,19 @@ const TopicReorderModalContent: React.FC<TopicReorderModalProps> = ({
             return (
               <div
                 key={topic.id}
-                className="flex items-center justify-between p-2.5 rounded-md border border-zinc-200 bg-white hover:border-zinc-300 transition-colors duration-150 shadow-2xs"
+                className="flex items-center justify-between p-2.5 rounded-lg border border-[#E4E2DE] bg-white hover:border-[#5557C8]/40 transition-all duration-150 shadow-2xs"
               >
                 <div className="flex items-center gap-2.5 min-w-0 pr-2">
-                  <GripVertical className="w-4 h-4 text-zinc-400 shrink-0" />
-                  <span className="w-5 h-5 rounded bg-zinc-100 text-zinc-700 text-xs font-mono font-bold flex items-center justify-center shrink-0 border border-zinc-200/80">
+                  <GripVertical className="w-4 h-4 text-[#777782] shrink-0 select-none opacity-60" />
+                  <span className="w-6 h-6 rounded-md bg-[#F8F7F4] text-[#24242A] text-xs font-mono font-bold flex items-center justify-center shrink-0 border border-[#E4E2DE] select-none tabular-nums">
                     {index + 1}
                   </span>
                   <div className="min-w-0">
-                    <h5 className="text-xs font-semibold text-zinc-900 truncate">
+                    <h5 className="text-xs font-semibold text-[#24242A] truncate">
                       {topic.title}
                     </h5>
                     {topic.prerequisites && topic.prerequisites.length > 0 && (
-                      <span className="text-[10px] text-zinc-400">
+                      <span className="text-[10px] text-[#777782] block truncate">
                         {topic.prerequisites.length} prerequisite{topic.prerequisites.length > 1 ? 's' : ''}
                       </span>
                     )}
@@ -157,21 +152,21 @@ const TopicReorderModalContent: React.FC<TopicReorderModalProps> = ({
                     type="button"
                     onClick={() => moveUp(index)}
                     disabled={isFirst || reorderMutation.isPending}
-                    className="p-1 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer transition"
+                    className="p-1.5 rounded-md text-[#777782] hover:text-[#24242A] hover:bg-[#24242A]/5 disabled:opacity-20 disabled:pointer-events-none cursor-pointer transition active:scale-95"
                     aria-label={`Move "${topic.title}" up`}
                     title={`Move up (currently position ${index + 1})`}
                   >
-                    <ArrowUp className="w-4 h-4" />
+                    <ArrowUp className="w-3.5 h-3.5 pointer-events-none" />
                   </button>
                   <button
                     type="button"
                     onClick={() => moveDown(index)}
                     disabled={isLast || reorderMutation.isPending}
-                    className="p-1 rounded text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 disabled:opacity-25 disabled:cursor-not-allowed cursor-pointer transition"
+                    className="p-1.5 rounded-md text-[#777782] hover:text-[#24242A] hover:bg-[#24242A]/5 disabled:opacity-20 disabled:pointer-events-none cursor-pointer transition active:scale-95"
                     aria-label={`Move "${topic.title}" down`}
                     title={`Move down (currently position ${index + 1})`}
                   >
-                    <ArrowDown className="w-4 h-4" />
+                    <ArrowDown className="w-3.5 h-3.5 pointer-events-none" />
                   </button>
                 </div>
               </div>

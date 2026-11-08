@@ -1,5 +1,4 @@
-import { describe, it } from 'node:test';
-import assert from 'node:assert';
+import { describe, it, expect } from 'vitest';
 import {
   loginSchema,
   registerSchema,
@@ -16,7 +15,7 @@ describe('Validation Schemas Tests', () => {
         email: 'alex.mercer@commit.dev',
         password: 'Password123!',
       });
-      assert.strictEqual(valid.success, true);
+      expect(valid.success).toBe(true);
     });
 
     it('rejects invalid email', () => {
@@ -24,9 +23,9 @@ describe('Validation Schemas Tests', () => {
         email: 'not-an-email',
         password: 'Password123!',
       });
-      assert.strictEqual(invalid.success, false);
+      expect(invalid.success).toBe(false);
       if (!invalid.success) {
-        assert.ok(invalid.error.issues.some((i) => i.path.includes('email')));
+        expect(invalid.error.issues.some((i) => i.path.includes('email'))).toBe(true);
       }
     });
 
@@ -35,7 +34,7 @@ describe('Validation Schemas Tests', () => {
         email: 'alex@example.com',
         password: '',
       });
-      assert.strictEqual(invalid.success, false);
+      expect(invalid.success).toBe(false);
     });
   });
 
@@ -46,7 +45,7 @@ describe('Validation Schemas Tests', () => {
         email: 'jane@example.com',
         password: 'Password123!',
       });
-      assert.strictEqual(valid.success, true);
+      expect(valid.success).toBe(true);
     });
 
     it('rejects short name or short password', () => {
@@ -55,14 +54,14 @@ describe('Validation Schemas Tests', () => {
         email: 'jane@example.com',
         password: 'Password123!',
       });
-      assert.strictEqual(shortName.success, false);
+      expect(shortName.success).toBe(false);
 
       const shortPassword = registerSchema.safeParse({
         name: 'Jane Doe',
         email: 'jane@example.com',
         password: 'short',
       });
-      assert.strictEqual(shortPassword.success, false);
+      expect(shortPassword.success).toBe(false);
     });
   });
 
@@ -72,7 +71,7 @@ describe('Validation Schemas Tests', () => {
         title: 'Learn Distributed Systems',
         description: 'Read designing data-intensive applications',
       });
-      assert.strictEqual(valid.success, true);
+      expect(valid.success).toBe(true);
     });
 
     it('rejects goal with title under 3 characters', () => {
@@ -80,7 +79,7 @@ describe('Validation Schemas Tests', () => {
         title: 'AB',
         description: '',
       });
-      assert.strictEqual(invalid.success, false);
+      expect(invalid.success).toBe(false);
     });
   });
 
@@ -91,9 +90,9 @@ describe('Validation Schemas Tests', () => {
         description: 'Leader election and log replication',
         prerequisiteIds: ['topic-1', 'topic-2'],
       });
-      assert.strictEqual(valid.success, true);
+      expect(valid.success).toBe(true);
       if (valid.success) {
-        assert.strictEqual(valid.data.prerequisiteIds.length, 2);
+        expect(valid.data.prerequisiteIds.length).toBe(2);
       }
     });
 
@@ -101,9 +100,9 @@ describe('Validation Schemas Tests', () => {
       const valid = topicSchema.safeParse({
         title: 'Paxos',
       });
-      assert.strictEqual(valid.success, true);
+      expect(valid.success).toBe(true);
       if (valid.success) {
-        assert.deepStrictEqual(valid.data.prerequisiteIds, []);
+        expect(valid.data.prerequisiteIds).toEqual([]);
       }
     });
   });
@@ -118,7 +117,7 @@ describe('Validation Schemas Tests', () => {
         minutes: 60,
         note: 'Completed section 1',
       });
-      assert.strictEqual(valid.success, true);
+      expect(valid.success).toBe(true);
     });
 
     it('rejects session with minutes below minimum', () => {
@@ -127,7 +126,7 @@ describe('Validation Schemas Tests', () => {
         studyDate: '2026-11-06',
         minutes: 10,
       });
-      assert.strictEqual(invalid.success, false);
+      expect(invalid.success).toBe(false);
     });
 
     it('rejects session with future date', () => {
@@ -136,7 +135,7 @@ describe('Validation Schemas Tests', () => {
         studyDate: '2026-11-10',
         minutes: 45,
       });
-      assert.strictEqual(invalid.success, false);
+      expect(invalid.success).toBe(false);
     });
   });
 
@@ -147,7 +146,7 @@ describe('Validation Schemas Tests', () => {
         maxSessionMinutes: 300,
         maxPrerequisitesPerTopic: 5,
       });
-      assert.strictEqual(valid.success, true);
+      expect(valid.success).toBe(true);
     });
 
     it('rejects minSessionMinutes >= maxSessionMinutes', () => {
@@ -156,7 +155,7 @@ describe('Validation Schemas Tests', () => {
         maxSessionMinutes: 60,
         maxPrerequisitesPerTopic: 5,
       });
-      assert.strictEqual(invalid.success, false);
+      expect(invalid.success).toBe(false);
     });
 
     it('rejects maxPrerequisitesPerTopic exceeding limit', () => {
@@ -165,7 +164,7 @@ describe('Validation Schemas Tests', () => {
         maxSessionMinutes: 120,
         maxPrerequisitesPerTopic: 25,
       });
-      assert.strictEqual(invalid.success, false);
+      expect(invalid.success).toBe(false);
     });
   });
 });

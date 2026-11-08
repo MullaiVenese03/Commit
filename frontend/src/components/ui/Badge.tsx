@@ -18,26 +18,26 @@ export const Badge: React.FC<BadgeProps> = ({
   dot = false,
 }) => {
   const variantStyles = {
-    neutral: 'bg-zinc-100 text-zinc-700 border-zinc-200/90',
-    success: 'bg-emerald-50 text-emerald-700 border-emerald-200/80',
-    warning: 'bg-amber-50 text-amber-700 border-amber-200/80',
-    info: 'bg-sky-50 text-sky-700 border-sky-200/80',
-    accent: 'bg-blue-50 text-blue-700 border-blue-200/80',
-    danger: 'bg-rose-50 text-rose-700 border-rose-200/80',
+    neutral: 'bg-[#ECEBE7] text-[#24242A] border-[#E4E2DE]',
+    success: 'bg-[#278568]/12 text-[#278568] border-[#278568]/25',
+    warning: 'bg-[#B98237]/12 text-[#B98237] border-[#B98237]/25',
+    info: 'bg-[#5557C8]/10 text-[#5557C8] border-[#5557C8]/20',
+    accent: 'bg-[#EEEEFC] text-[#5557C8] border-[#5557C8]/25',
+    danger: 'bg-[#C45C5C]/12 text-[#C45C5C] border-[#C45C5C]/25',
   }[variant];
 
   const dotStyles = {
-    neutral: 'bg-zinc-400',
-    success: 'bg-emerald-500',
-    warning: 'bg-amber-500',
-    info: 'bg-sky-500',
-    accent: 'bg-blue-600',
-    danger: 'bg-rose-500',
+    neutral: 'bg-[#777782]',
+    success: 'bg-[#278568]',
+    warning: 'bg-[#B98237]',
+    info: 'bg-[#5557C8]',
+    accent: 'bg-[#5557C8]',
+    danger: 'bg-[#C45C5C]',
   }[variant];
 
   const sizeStyles = {
     sm: 'text-[11px] px-1.5 py-0.5 gap-1 font-medium',
-    md: 'text-xs px-2 py-0.5 gap-1.5 font-medium',
+    md: 'text-xs px-2.5 py-0.5 gap-1.5 font-medium',
   }[size];
 
   return (
@@ -45,7 +45,7 @@ export const Badge: React.FC<BadgeProps> = ({
       className={`inline-flex items-center rounded-md border ${variantStyles} ${sizeStyles} ${className} tracking-tight select-none`}
     >
       {dot && <span className={`w-1.5 h-1.5 rounded-full ${dotStyles} shrink-0`} />}
-      {icon}
+      {icon && <span className="shrink-0 flex items-center">{icon}</span>}
       <span>{children}</span>
     </span>
   );

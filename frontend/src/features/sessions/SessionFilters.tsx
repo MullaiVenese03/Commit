@@ -1,7 +1,7 @@
 import React from 'react';
 import { Filter, RotateCcw } from 'lucide-react';
 import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
+import { DatePicker } from '../../components/ui/DatePicker';
 import { Select } from '../../components/ui/Select';
 import { useGoals } from '../../hooks/useGoals';
 import type { FilterSessionsParams } from '../../services/sessions.service';
@@ -24,7 +24,7 @@ export const SessionFilters: React.FC<SessionFiltersProps> = ({
     onChange({
       ...filters,
       goalId,
-      topicId: undefined, // Reset topic when goal changes
+      topicId: undefined, // Reset dependent topic filter
     });
   };
 
@@ -35,17 +35,17 @@ export const SessionFilters: React.FC<SessionFiltersProps> = ({
     });
   };
 
-  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleStartDateChange = (date: string) => {
     onChange({
       ...filters,
-      startDate: e.target.value || undefined,
+      startDate: date || undefined,
     });
   };
 
-  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleEndDateChange = (date: string) => {
     onChange({
       ...filters,
-      endDate: e.target.value || undefined,
+      endDate: date || undefined,
     });
   };
 
@@ -62,19 +62,19 @@ export const SessionFilters: React.FC<SessionFiltersProps> = ({
   );
 
   return (
-    <div className="bg-white p-4 rounded-lg border border-zinc-200/90 shadow-2xs space-y-3">
+    <div className="bg-white p-4 rounded-xl border border-[#E4E2DE] shadow-xs space-y-3">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-1.5 text-xs font-semibold text-zinc-700 uppercase tracking-wider">
-          <Filter className="w-3.5 h-3.5 text-blue-600" />
+        <div className="flex items-center gap-1.5 text-xs font-semibold text-[#24242A] uppercase tracking-wider select-none">
+          <Filter className="w-3.5 h-3.5 text-[#5557C8]" />
           <span>Filter Study Sessions</span>
         </div>
         {hasActiveFilters && (
           <Button
             variant="ghost"
-            size="sm"
+            size="xs"
             onClick={onReset}
-            leftIcon={<RotateCcw className="w-3 h-3 text-zinc-400" />}
-            className="text-xs text-zinc-500 hover:text-zinc-900 h-7 px-2"
+            leftIcon={<RotateCcw className="w-3 h-3 text-[#777782]" />}
+            className="text-xs text-[#777782] hover:text-[#24242A]"
           >
             Reset Filters
           </Button>
@@ -113,20 +113,16 @@ export const SessionFilters: React.FC<SessionFiltersProps> = ({
           ))}
         </Select>
 
-        <Input
+        <DatePicker
           label="From Date"
-          type="date"
           value={filters.startDate ? filters.startDate.split('T')[0] : ''}
           onChange={handleStartDateChange}
-          className="text-xs py-1"
         />
 
-        <Input
+        <DatePicker
           label="To Date"
-          type="date"
           value={filters.endDate ? filters.endDate.split('T')[0] : ''}
           onChange={handleEndDateChange}
-          className="text-xs py-1"
         />
       </div>
     </div>

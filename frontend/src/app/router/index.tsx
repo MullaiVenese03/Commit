@@ -1,6 +1,7 @@
 import React, { Suspense, lazy } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
 import { AppLayout } from '../../components/layout/AppLayout';
+import { CommitLogo } from '../../components/ui/CommitLogo';
 import { Spinner } from '../../components/ui/Spinner';
 import { useAuth } from '../../hooks/useAuth';
 import { ProtectedRoute } from './ProtectedRoute';
@@ -22,9 +23,10 @@ const SessionHistoryPage = lazy(() => import('../../features/sessions/SessionHis
 const SettingsPage = lazy(() => import('../../features/settings/SettingsPage').then((m) => ({ default: m.SettingsPage })));
 
 const RouteLoading: React.FC = () => (
-  <div className="flex flex-col items-center justify-center py-24 min-h-[50vh]">
-    <Spinner size="lg" className="text-zinc-600" />
-    <span className="text-xs text-zinc-400 mt-2.5 font-medium">Loading view...</span>
+  <div className="flex flex-col items-center justify-center py-24 min-h-[50vh] animate-in fade-in duration-100">
+    <CommitLogo size="md" className="opacity-80 mb-2.5 animate-pulse" />
+    <Spinner size="sm" className="text-[#5557C8]" />
+    <span className="text-xs text-[#777782] mt-2 font-medium">Loading view...</span>
   </div>
 );
 

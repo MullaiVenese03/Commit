@@ -12,15 +12,15 @@ export const MentorGoalsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-zinc-200/80">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E4E2DE]">
         <div>
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-blue-600 block">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-[#5557C8] block select-none">
             Cohort Oversight
           </span>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-950 mt-0.5">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#24242A] mt-0.5">
             Learner Curricula
           </h1>
-          <p className="text-xs text-zinc-500 mt-1">
+          <p className="text-xs text-[#777782] mt-1 max-w-2xl leading-normal">
             Review active study goals and curriculum completion states across all cohort learners.
           </p>
         </div>
@@ -30,7 +30,6 @@ export const MentorGoalsPage: React.FC = () => {
             label="Filter by Learner"
             value={selectedLearnerId}
             onChange={(e) => setSelectedLearnerId(e.target.value)}
-            className="text-xs py-1"
           >
             <option value="">All Cohort Learners</option>
             {learners.map((l) => (
@@ -43,16 +42,16 @@ export const MentorGoalsPage: React.FC = () => {
       </div>
 
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center p-16 bg-white rounded-lg border border-zinc-200">
-          <Spinner size="lg" className="text-zinc-600" />
-          <p className="text-xs text-zinc-500 mt-3 font-medium">Loading learner goals...</p>
+        <div className="flex flex-col items-center justify-center p-16 bg-white rounded-xl border border-[#E4E2DE]">
+          <Spinner size="lg" className="text-[#5557C8]" />
+          <p className="text-xs text-[#777782] mt-3 font-medium">Loading learner goals...</p>
         </div>
       ) : error ? (
-        <div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg text-xs leading-normal">
+        <div className="p-4 bg-[#C45C5C]/10 border border-[#C45C5C]/25 text-[#C45C5C] rounded-xl text-xs leading-normal">
           Failed to load goals.
         </div>
       ) : goals.length === 0 ? (
-        <div className="p-12 text-center text-xs text-zinc-500 bg-white rounded-lg border border-zinc-200">
+        <div className="p-12 text-center text-xs text-[#777782] bg-white rounded-xl border border-[#E4E2DE]">
           No curricula found for the selected filter.
         </div>
       ) : (

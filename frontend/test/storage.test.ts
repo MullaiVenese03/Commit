@@ -1,44 +1,20 @@
-import { describe, it, beforeEach } from 'node:test';
-import assert from 'node:assert';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { storage } from '../src/utils/storage.ts';
-
-// Mock localStorage for Node runtime
-class MockLocalStorage {
-  private store: Map<string, string> = new Map();
-
-  getItem(key: string): string | null {
-    return this.store.get(key) ?? null;
-  }
-
-  setItem(key: string, value: string): void {
-    this.store.set(key, String(value));
-  }
-
-  removeItem(key: string): void {
-    this.store.delete(key);
-  }
-
-  clear(): void {
-    this.store.clear();
-  }
-}
-
-// @ts-expect-error polyfill for Node test environment
-globalThis.localStorage = new MockLocalStorage();
 
 describe('Storage utility tests', () => {
   beforeEach(() => {
+    localStorage.clear();
     storage.clear();
   });
 
   it('stores and retrieves auth token correctly', () => {
-    assert.strictEqual(storage.getToken(), null);
+    expect(storage.getToken()).toBeNull();
     storage.setToken('mock-jwt-token-xyz');
-    assert.strictEqual(storage.getToken(), 'mock-jwt-token-xyz');
+    expect(storage.getToken()).toBe('mock-jwt-token-xyz');
   });
 
   it('stores and retrieves user profile correctly', () => {
-    assert.strictEqual(storage.getUser(), null);
+    expect(storage.getUser()).toBeNull();
     const mockUser = {
       id: 'usr-1',
       email: 'alex.mercer@commit.dev',
@@ -49,7 +25,7 @@ describe('Storage utility tests', () => {
     };
     storage.setUser(mockUser);
     const retrieved = storage.getUser();
-    assert.deepStrictEqual(retrieved, mockUser);
+    expect(retrieved).toEqual(mockUser);
   });
 
   it('clears token and user on clear() call', () => {
@@ -58,13 +34,12 @@ describe('Storage utility tests', () => {
       id: 'usr-2',
       email: 'test@example.com',
       name: 'Test',
-      role: 'LEARNER' as const,
-      createdAt: '',
-      updatedAt: '',
+      role: 'MENTOR' as const,
+      createdAt: '2026-10-01T00:00:00.000Z',
+      updatedAt: '2026-10-01T00:00:00.000Z',
     });
-
     storage.clear();
-    assert.strictEqual(storage.getToken(), null);
-    assert.strictEqual(storage.getUser(), null);
+    expect(storage.getToken()).toBeNull();
+    expect(storage.getUser()).toBeNull();
   });
 });

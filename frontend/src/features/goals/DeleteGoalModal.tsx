@@ -68,18 +68,18 @@ export const DeleteGoalModal: React.FC<DeleteGoalModalProps> = ({
       <div className="space-y-3">
         {error && <Alert variant="error">{error}</Alert>}
 
-        <div className="flex items-start gap-3 text-xs text-zinc-600">
-          <div className="p-2 bg-rose-50 text-rose-600 rounded-md shrink-0 border border-rose-200/60">
+        <div className="flex items-start gap-3 text-xs text-[#777782]">
+          <div className="p-2 bg-[#C45C5C]/10 text-[#C45C5C] rounded-lg shrink-0 border border-[#C45C5C]/25">
             <AlertTriangle className="w-4 h-4" />
           </div>
           <div>
-            <p className="font-semibold text-zinc-900 text-sm">
+            <p className="font-semibold text-[#24242A] text-sm">
               Are you sure you want to delete "{goal.title}"?
             </p>
-            <p className="mt-1 text-zinc-500 leading-normal">
+            <p className="mt-1 text-[#777782] leading-normal">
               This action cannot be undone.
               {topicCount > 0 && (
-                <span className="block mt-1 font-medium text-amber-700 bg-amber-50 p-2 rounded border border-amber-200/80">
+                <span className="block mt-2 font-medium text-[#B98237] bg-[#B98237]/10 p-2.5 rounded-lg border border-[#B98237]/25">
                   Notice: Deleting this curriculum will permanently delete {topicCount} associated topic milestone{topicCount > 1 ? 's' : ''} and all logged study sessions.
                 </span>
               )}

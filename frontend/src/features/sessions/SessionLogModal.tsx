@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { z } from 'zod';
 import { Alert } from '../../components/ui/Alert';
 import { Button } from '../../components/ui/Button';
-import { Input } from '../../components/ui/Input';
+import { DatePicker } from '../../components/ui/DatePicker';
+import { DurationInput } from '../../components/ui/DurationInput';
 import { Modal } from '../../components/ui/Modal';
-import { Select } from '../../components/ui/Select';
+import { SearchableSelect } from '../../components/ui/SearchableSelect';
 import { Textarea } from '../../components/ui/Textarea';
 import { useGoals } from '../../hooks/useGoals';
 import { useCreateSession } from '../../hooks/useSessions';
@@ -35,7 +36,8 @@ export const SessionLogModal: React.FC<SessionLogModalProps> = ({
   const maxMinutes = settings?.maxSessionMinutes ?? 480;
 
   // Today in YYYY-MM-DD local format
-  const todayStr = new Date().toISOString().split('T')[0];
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
   const sessionSchema = createSessionSchema(minMinutes, maxMinutes, todayStr);
   type SessionFormData = z.infer<typeof sessionSchema>;
@@ -43,6 +45,8 @@ export const SessionLogModal: React.FC<SessionLogModalProps> = ({
   const {
     register,
     handleSubmit,
+    setValue,
+    control,
     reset,
     formState: { errors, isSubmitting, isValid },
   } = useForm<SessionFormData>({
@@ -55,6 +59,10 @@ export const SessionLogModal: React.FC<SessionLogModalProps> = ({
       note: '',
     },
   });
+
+  const selectedTopicId = useWatch({ control, name: 'topicId' }) ?? '';
+  const selectedDate = useWatch({ control, name: 'studyDate' }) ?? todayStr;
+  const selectedMinutes = useWatch({ control, name: 'minutes' }) ?? 30;
 
   useEffect(() => {
     if (isOpen) {
@@ -72,14 +80,14 @@ export const SessionLogModal: React.FC<SessionLogModalProps> = ({
     onClose();
   };
 
-  // Aggregate all topics from all goals for the selector
-  const allTopics: Array<{ id: string; title: string; goalTitle: string }> = [];
+  // Aggregate all topics from all goals for the searchable selector
+  const allTopicOptions: Array<{ value: string; label: string; secondaryLabel: string }> = [];
   for (const goal of goals) {
     for (const t of goal.topics || []) {
-      allTopics.push({
-        id: t.id,
-        title: t.title,
-        goalTitle: goal.title,
+      allTopicOptions.push({
+        value: t.id,
+        label: t.title,
+        secondaryLabel: goal.title,
       });
     }
   }
@@ -133,44 +141,41 @@ export const SessionLogModal: React.FC<SessionLogModalProps> = ({
           </Alert>
         )}
 
-        <Select
+        {/* Custom Searchable Topic Selector */}
+        <SearchableSelect
           label="Curriculum Milestone"
           requiredIndicator
+          options={allTopicOptions}
+          value={selectedTopicId}
+          onChange={(newTopicId) => setValue('topicId', newTopicId, { shouldValidate: true, shouldTouch: true })}
           error={errors.topicId?.message}
           helperText="Select the topic milestone you focused on."
-          {...register('topicId')}
-        >
-          <option value="">Select a topic milestone...</option>
-          {allTopics.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.title} - ({t.goalTitle})
-            </option>
-          ))}
-        </Select>
+          placeholder="Search and select milestone topic..."
+        />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input
+          {/* Custom macOS Calendar Date Picker Popover */}
+          <DatePicker
             label="Study Date"
-            type="date"
-            max={todayStr}
             requiredIndicator
+            value={selectedDate}
+            onChange={(newDate) => setValue('studyDate', newDate, { shouldValidate: true, shouldTouch: true })}
+            maxDate={todayStr}
             error={errors.studyDate?.message}
             helperText="Cannot be in the future."
-            {...register('studyDate')}
           />
 
-          <div>
-            <Input
-              label="Duration (Minutes)"
-              type="number"
-              min={minMinutes}
-              max={maxMinutes}
-              requiredIndicator
-              error={errors.minutes?.message}
-              helperText={`Allowed range: ${minMinutes}–${maxMinutes} minutes.`}
-              {...register('minutes', { valueAsNumber: true })}
-            />
-          </div>
+          {/* Custom Duration Input with presets & hidden browser spinners */}
+          <DurationInput
+            label="Duration (Minutes)"
+            requiredIndicator
+            value={selectedMinutes}
+            onChange={(newMinutes) => setValue('minutes', newMinutes, { shouldValidate: true, shouldTouch: true })}
+            min={minMinutes}
+            max={maxMinutes}
+            error={errors.minutes?.message}
+            helperText={`Allowed range: ${minMinutes}–${maxMinutes} minutes.`}
+          />
         </div>
 
         <Textarea

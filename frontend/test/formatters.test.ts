@@ -1,5 +1,4 @@
-import { describe, it } from 'node:test';
-import assert from 'node:assert';
+import { describe, it, expect } from 'vitest';
 import {
   formatDate,
   formatDateTime,
@@ -10,40 +9,40 @@ import {
 
 describe('Formatters utility tests', () => {
   it('formats minutes into human readable hours and minutes', () => {
-    assert.strictEqual(formatMinutes(0), '0m');
-    assert.strictEqual(formatMinutes(45), '45m');
-    assert.strictEqual(formatMinutes(60), '1h');
-    assert.strictEqual(formatMinutes(90), '1h 30m');
-    assert.strictEqual(formatMinutes(125), '2h 5m');
-    assert.strictEqual(formatMinutes(-10), '0m');
+    expect(formatMinutes(0)).toBe('0m');
+    expect(formatMinutes(45)).toBe('45m');
+    expect(formatMinutes(60)).toBe('1h');
+    expect(formatMinutes(90)).toBe('1h 30m');
+    expect(formatMinutes(125)).toBe('2h 5m');
+    expect(formatMinutes(-10)).toBe('0m');
   });
 
   it('formats percentages correctly bounded between 0 and 100', () => {
-    assert.strictEqual(formatPercentage(0), '0%');
-    assert.strictEqual(formatPercentage(45.6), '46%');
-    assert.strictEqual(formatPercentage(100), '100%');
-    assert.strictEqual(formatPercentage(150), '100%');
-    assert.strictEqual(formatPercentage(-20), '0%');
+    expect(formatPercentage(0)).toBe('0%');
+    expect(formatPercentage(45.6)).toBe('46%');
+    expect(formatPercentage(100)).toBe('100%');
+    expect(formatPercentage(150)).toBe('100%');
+    expect(formatPercentage(-20)).toBe('0%');
   });
 
   it('formats dates consistently', () => {
-    assert.strictEqual(formatDate(null), '-');
-    assert.strictEqual(formatDate('invalid-date'), '-');
+    expect(formatDate(null)).toBe('-');
+    expect(formatDate('invalid-date')).toBe('-');
     const validDate = '2026-10-15T12:00:00.000Z';
     const result = formatDate(validDate);
-    assert.ok(result.includes('2026') || result.includes('Oct'));
+    expect(result.includes('2026') || result.includes('Oct')).toBe(true);
   });
 
   it('formats date and time', () => {
-    assert.strictEqual(formatDateTime(null), '-');
-    assert.strictEqual(formatDateTime('invalid-date'), '-');
+    expect(formatDateTime(null)).toBe('-');
+    expect(formatDateTime('invalid-date')).toBe('-');
     const validDate = '2026-10-15T14:30:00.000Z';
     const result = formatDateTime(validDate);
-    assert.ok(result.length > 5);
+    expect(result.length).toBeGreaterThan(5);
   });
 
   it('extracts error messages from various error types', () => {
-    assert.strictEqual(getErrorMessage(new Error('Sample error')), 'Sample error');
-    assert.strictEqual(getErrorMessage('String error'), 'An unexpected error occurred.');
+    expect(getErrorMessage(new Error('Sample error'))).toBe('Sample error');
+    expect(getErrorMessage('String error')).toBe('An unexpected error occurred.');
   });
 });

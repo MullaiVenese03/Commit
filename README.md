@@ -1,4 +1,4 @@
-# Commit
+# <img src="frontend/public/branding/commit-logo.png" alt="Commit logo" width="44" height="40" align="middle" style="vertical-align: middle;" /> Commit
 
 **Study Progress Tracker with Prerequisite Rules**
 
@@ -12,12 +12,12 @@ This project is built and configured exclusively for **local execution** as part
 
 A screen recording demonstrating the complete, locally running application:
 
-🎬 **[Watch the Commit Project Demonstration](VIDEO_LINK_PLACEHOLDER)**
+🎬 **[Watch Commit Project Demonstration](demo/Commit-Demo-Video.mp4)**
 
 > [!NOTE]
 > The demonstration video runs for under five minutes and shows the complete workflow running locally: learner authentication, goal curriculum inspection, locked topics with missing prerequisites, dynamic unlocking upon completing prerequisites, study session logging, progress analytics (study streaks, 365-day activity heatmap, weekly study target), cascading dependent re-locking, mentor cohort monitoring, and system settings administration.
 >
-> The video file will be placed in the [`demo/`](demo/) directory prior to final submission.
+> The video file is located at [`demo/Commit-Demo-Video.mp4`](demo/Commit-Demo-Video.mp4).
 
 ---
 
@@ -523,10 +523,11 @@ Features documented in Swagger include:
 ```text
 Commit/
 ├── README.md                           # Root project documentation
+├── .gitattributes                      # Git LFS configuration rules
 ├── .gitignore                          # Git ignore rules
 │
 ├── demo/                               # Assessment demonstration video directory
-│   └── README.md                       # Video placement and file size guidelines
+│   └── Commit-Demo-Video.mp4           # Assessment walkthrough video demonstration
 │
 ├── docs/                               # Assessment technical documentation
 │   └── architecture.md                 # Full technical architecture and system design
@@ -591,4 +592,3 @@ Commit/
 - **Local-Only Execution**: The application is configured exclusively for local execution on `localhost:3000` (backend) and `localhost:5173` (frontend); cloud deployment configurations have been intentionally removed.
 - **Single System Settings Record**: Global system settings (`id: "global"`) are shared across the system rather than scoped per cohort.
 - **PostgreSQL Requirement**: Requires a local PostgreSQL server listening on port `5432` with active `commit_db` and `commit_test_db` databases.
-- **Demonstration Video Placeholder**: The video link placeholder `VIDEO_LINK_PLACEHOLDER` in this README will be updated with the actual recording URL prior to final assessment review.

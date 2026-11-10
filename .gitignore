@@ -27,5 +27,9 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 
-# Local development files
+# Local development and temporary files
 *.local
+scratch/
+.agents/
+.claude/
+.windsurf/

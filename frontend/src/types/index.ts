@@ -122,6 +122,45 @@ export interface GoalProgressSummary {
   progressPercentage: number;
 }
 
+export interface StreakMetrics {
+  learnerId: string;
+  currentStreak: number;
+  longestStreak: number;
+  totalActiveDays: number;
+  isActiveToday: boolean;
+  isActiveYesterday: boolean;
+  referenceDate: string;
+}
+
+export interface DailyActivity {
+  date: string;
+  sessionCount: number;
+  totalMinutes: number;
+  level: 0 | 1 | 2 | 3 | 4;
+}
+
+export interface ActivityResponse {
+  learnerId: string;
+  startDate: string;
+  endDate: string;
+  totalDays: number;
+  activeDays: number;
+  totalActiveDays?: number;
+  totalMinutes: number;
+  days: DailyActivity[];
+}
+
+export interface WeeklyTargetResponse {
+  learnerId: string;
+  targetMinutes: number;
+  completedMinutes: number;
+  remainingMinutes: number;
+  completionPercentage: number;
+  isTargetMet: boolean;
+  weekStart: string;
+  weekEnd: string;
+}
+
 export interface ProgressResponse {
   learner: {
     id: string;
@@ -130,6 +169,8 @@ export interface ProgressResponse {
     role: Role;
   };
   overview: ProgressOverview;
+  streak?: StreakMetrics;
+  weeklyTarget?: WeeklyTargetResponse;
   goals: GoalProgressSummary[];
   recentSessions: StudySession[];
 }

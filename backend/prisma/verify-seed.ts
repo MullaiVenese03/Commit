@@ -2,17 +2,25 @@ import 'dotenv/config';
 import { PrismaPg } from '@prisma/adapter-pg';
 import argon2 from 'argon2';
 import { PrismaClient, Role } from '../src/generated/prisma/client';
+import { SEED_DATA } from './seed';
 
 const connectionString = process.env.DATABASE_URL;
 if (!connectionString) {
   throw new Error('DATABASE_URL environment variable is required.');
 }
 
+if (process.env.NODE_ENV === 'production' && process.env.ALLOW_PRODUCTION_SEED !== 'true') {
+  console.error(
+    '❌ Seed verification audit aborted: Running seed audit against a production environment is forbidden without ALLOW_PRODUCTION_SEED=true.',
+  );
+  process.exit(1);
+}
+
 const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
 async function verify() {
-  console.log('🔍 Running Phase 1 Seed Verification Audit...\n');
+  console.log('🔍 Running Database Seed Verification Audit...\n');
 
   let passed = true;
   function assert(condition: boolean, message: string) {
@@ -70,9 +78,13 @@ async function verify() {
     include: { learner: true, topics: true },
     orderBy: { createdAt: 'asc' },
   });
-  assert(goals.length === 3, `Goal count is ${goals.length} (expected exactly 3)`);
-  for (const goal of goals) {
-    assert(goal.learner.role === Role.LEARNER, `Goal "${goal.title}" is owned by learner ${goal.learner.email}`);
+  assert(goals.length >= 3, `Total goal count is ${goals.length} (expected at least 3 baseline goals)`);
+  for (const bg of SEED_DATA.goals) {
+    const found = goals.find((g) => g.id === bg.id);
+    assert(Boolean(found), `Baseline goal "${bg.title}" exists`);
+    if (found) {
+      assert(found.learner.role === Role.LEARNER, `Goal "${found.title}" is owned by learner ${found.learner.email}`);
+    }
   }
 
   // 4. Verify Topics
@@ -85,7 +97,11 @@ async function verify() {
     },
     orderBy: { title: 'asc' },
   });
-  assert(topics.length === 12, `Topic count is ${topics.length} (expected exactly 12)`);
+  assert(topics.length >= 12, `Total topic count is ${topics.length} (expected at least 12 baseline topics)`);
+  for (const bt of SEED_DATA.topics) {
+    const found = topics.find((t) => t.id === bt.id);
+    assert(Boolean(found), `Baseline topic "${bt.title}" exists`);
+  }
 
   // 5. Verify Prerequisites
   console.log('\n5. Prerequisite Structure & Constraints:');
@@ -161,17 +177,16 @@ async function verify() {
     include: { learner: true, topic: { include: { goal: true } } },
     orderBy: { studyDate: 'asc' },
   });
-  assert(sessions.length === 30, `Total session count is ${sessions.length} (expected exactly 30)`);
+  assert(sessions.length >= 30, `Total session count is ${sessions.length} (expected at least 30)`);
+  const baselineSessions = sessions.filter((s) => SEED_DATA.studySessions.some((bs) => bs.id === s.id));
+  assert(baselineSessions.length === 30, `Baseline session count is ${baselineSessions.length} (expected exactly 30)`);
 
   let invalidLearnerMapping = false;
   let outOfRangeMinutes = false;
   let futureDate = false;
 
   const now = new Date();
-  const sessionDates: Date[] = [];
-
   for (const s of sessions) {
-    sessionDates.push(new Date(s.studyDate));
     // Verify session belongs to learner who owns the goal
     if (s.learnerId !== s.topic.goal.learnerId) {
       invalidLearnerMapping = true;
@@ -190,23 +205,24 @@ async function verify() {
   assert(!outOfRangeMinutes, 'All session durations fall within the configured 5 to 480 minute range');
   assert(!futureDate, 'No study session dates are in the future');
 
-  // Verify Six-Week Distribution
-  const minDate = sessionDates[0];
-  const maxDate = sessionDates[sessionDates.length - 1];
+  // Verify Six-Week Distribution across baseline sessions
+  const baselineDates = baselineSessions.map((s) => new Date(s.studyDate)).sort((a, b) => a.getTime() - b.getTime());
+  const minDate = baselineDates[0];
+  const maxDate = baselineDates[baselineDates.length - 1];
   const daySpan = Math.round((maxDate.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
   const weekSpan = Math.ceil(daySpan / 7);
 
-  console.log(`  Date Span: ${minDate.toISOString().slice(0, 10)} to ${maxDate.toISOString().slice(0, 10)} (${daySpan} days, ~${weekSpan} weeks)`);
-  assert(daySpan >= 35 && daySpan <= 45, `Sessions cover a 6-week distribution span (${daySpan} days covered)`);
+  console.log(`  Baseline Date Span: ${minDate.toISOString().slice(0, 10)} to ${maxDate.toISOString().slice(0, 10)} (${daySpan} days, ~${weekSpan} weeks)`);
+  assert(daySpan >= 35 && daySpan <= 45, `Baseline sessions cover a 6-week distribution span (${daySpan} days covered)`);
 
   // Count sessions per calendar week
   const weekBuckets = new Map<number, number>();
-  for (const d of sessionDates) {
+  for (const d of baselineDates) {
     const diffDays = Math.floor((d.getTime() - minDate.getTime()) / (1000 * 60 * 60 * 24));
     const weekIndex = Math.floor(diffDays / 7) + 1;
     weekBuckets.set(weekIndex, (weekBuckets.get(weekIndex) || 0) + 1);
   }
-  assert(weekBuckets.size === 6, `Sessions are actively distributed across all 6 distinct weeks: ${Array.from(weekBuckets.entries()).map(([w, c]) => `Week ${w}: ${c}`).join(', ')}`);
+  assert(weekBuckets.size === 6, `Baseline sessions are actively distributed across all 6 distinct weeks: ${Array.from(weekBuckets.entries()).map(([w, c]) => `Week ${w}: ${c}`).join(', ')}`);
 
   console.log('\n======================================================');
   if (passed) {

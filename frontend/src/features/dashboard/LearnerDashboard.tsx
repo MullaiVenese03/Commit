@@ -23,6 +23,8 @@ import { SessionLogModal } from '../sessions/SessionLogModal';
 import { ActivityTimeline } from './ActivityTimeline';
 import { StatCard } from './StatCard';
 import { WeeklyActivityChart } from './WeeklyActivityChart';
+import { StudyActivitySection } from '../progress/StudyActivitySection';
+import { WeeklyTargetCard } from '../progress/WeeklyTargetCard';
 
 export const LearnerDashboard: React.FC = () => {
   const { user } = useAuth();
@@ -187,6 +189,12 @@ export const LearnerDashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Weekly Study Target Card */}
+      <WeeklyTargetCard />
+
+      {/* Study Streaks & Activity Heatmap Section */}
+      <StudyActivitySection />
 
       {/* Main Content Grid: Goal Overview + Recent Study Sessions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

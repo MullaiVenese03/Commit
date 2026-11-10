@@ -20,6 +20,8 @@ import { useLearnerProgress } from '../../hooks/useProgress';
 import { formatMinutes, getErrorMessage } from '../../utils/formatters';
 import { StatCard } from '../dashboard/StatCard';
 import { ProgressCharts } from '../progress/ProgressCharts';
+import { StudyActivitySection } from '../progress/StudyActivitySection';
+import { WeeklyTargetCard } from '../progress/WeeklyTargetCard';
 import { SessionTable } from '../sessions/SessionTable';
 import { TopicCard } from '../topics/TopicCard';
 
@@ -27,7 +29,7 @@ export const LearnerDetailPage: React.FC = () => {
   const { learnerId } = useParams<{ learnerId: string }>();
   const navigate = useNavigate();
 
-  const [activeTab, setActiveTab] = useState<'goals' | 'sessions' | 'charts'>('goals');
+  const [activeTab, setActiveTab] = useState<'goals' | 'sessions' | 'activity' | 'charts'>('goals');
 
   const {
     data: progress,
@@ -167,6 +169,9 @@ export const LearnerDetailPage: React.FC = () => {
         />
       </div>
 
+      {/* Learner Weekly Study Target (Mentor Read-Only Inspection) */}
+      <WeeklyTargetCard learnerId={learnerId} isReadOnly />
+
       {/* macOS-style segmented tabs navigation */}
       <div className="inline-flex p-1 bg-[#ECEBE7] rounded-xl border border-[#E4E2DE] text-xs font-medium select-none">
         <button
@@ -190,6 +195,17 @@ export const LearnerDetailPage: React.FC = () => {
           }`}
         >
           Study Sessions ({sessions.length})
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('activity')}
+          className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
+            activeTab === 'activity'
+              ? 'bg-white text-[#24242A] font-semibold shadow-xs'
+              : 'text-[#777782] hover:text-[#24242A]'
+          }`}
+        >
+          Activity & Streaks
         </button>
         <button
           type="button"
@@ -277,7 +293,14 @@ export const LearnerDetailPage: React.FC = () => {
         </div>
       )}
 
-      {/* Tab 3: Visual Analytics */}
+      {/* Tab 3: Activity Heatmap & Streaks */}
+      {activeTab === 'activity' && (
+        <div>
+          <StudyActivitySection learnerId={learner.id} isReadOnly />
+        </div>
+      )}
+
+      {/* Tab 4: Visual Analytics */}
       {activeTab === 'charts' && (
         <div>
           <ProgressCharts overview={overview} goals={goalProgress} />

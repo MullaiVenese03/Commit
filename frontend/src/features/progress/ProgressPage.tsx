@@ -16,6 +16,8 @@ import { formatMinutes } from '../../utils/formatters';
 import { StatCard } from '../dashboard/StatCard';
 import { SessionTable } from '../sessions/SessionTable';
 import { ProgressCharts } from './ProgressCharts';
+import { StudyActivitySection } from './StudyActivitySection';
+import { WeeklyTargetCard } from './WeeklyTargetCard';
 
 export const ProgressPage: React.FC = () => {
   const { data: progress, isLoading, error } = useMyProgress();
@@ -91,6 +93,12 @@ export const ProgressPage: React.FC = () => {
           iconBgColor="bg-[#EEEEFC] border border-[#5557C8]/25"
         />
       </div>
+
+      {/* Weekly Study Target */}
+      <WeeklyTargetCard />
+
+      {/* Study Streaks & Activity Heatmap */}
+      <StudyActivitySection />
 
       {/* Recharts Visualizations */}
       <ProgressCharts overview={overview} goals={goals} />

@@ -8,6 +8,13 @@ if (!connectionString) {
   throw new Error('DATABASE_URL environment variable is required for database seeding.');
 }
 
+if (process.env.NODE_ENV === 'production' && process.env.ALLOW_PRODUCTION_SEED !== 'true') {
+  console.error(
+    '❌ Database seeding aborted: Seeding demo data in a production environment is forbidden without ALLOW_PRODUCTION_SEED=true.',
+  );
+  process.exit(1);
+}
+
 const adapter = new PrismaPg({ connectionString });
 const prisma = new PrismaClient({ adapter });
 
@@ -661,11 +668,14 @@ export async function main() {
   console.log('✅ Database seed completed successfully!');
 }
 
-main()
-  .catch((e) => {
-    console.error('❌ Error during seeding:', e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+const isDirectExecution = process.argv[1]?.replace(/\\/g, '/').endsWith('prisma/seed.ts');
+if (isDirectExecution) {
+  main()
+    .catch((e) => {
+      console.error('❌ Error during seeding:', e);
+      process.exit(1);
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}
